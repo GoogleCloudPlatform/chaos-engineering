@@ -1,4 +1,4 @@
-# chaos-engineering
+# Chaos-Engineering
 
 What is Chaos Engineering?
 Chaos engineering is a methodology that emerged in response to the need to build more resilient and reliable systems in the face of increasing complexity. The core idea is simple: intentionally introduce controlled chaos into a system to uncover vulnerabilities, assess its robustness, and improve its overall reliability.

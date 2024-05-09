@@ -1,0 +1,98 @@
+{
+    "title": "What is the impact of introducing fault in Pubsub using private google access",
+    "description": "If a fault is introduced, we should see an error.",
+    "configuration": {
+        "gcp_project_id": {
+            "type": "env",
+            "key": "var_gcp_project_id"
+        },
+        "gcp_region": {
+            "type": "env",
+            "key": "var_gcp_region"
+        },
+        "instance_name": {
+            "type": "env",
+            "key": "var_instance_name"
+        },
+        "tags_list_old": {
+            "type": "env",
+            "key": "var_tags_list_old"
+        },
+        "tags_list_new": {
+            "type": "env",
+            "key": "var_tags_list_new"
+        },
+        "zone": {
+            "type": "env",
+            "key": "var_zone"
+        },
+        "server_host": {
+            "type": "env",
+            "key": "var_server_host"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "python process running and returning ",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "url": "http://${server_host}:5000"
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+            "name": "set network tag for instance",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.compute.actions",
+                "func": "set_instance_tags",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "instance_name": "${instance_name}",
+                    "tags_list": [
+                        "${tags_list_new}"
+                    ],
+                    "project_id": "${gcp_project_id}",
+                    "zone": "${zone}"
+                }
+            },
+            "pauses": {
+                "after": 5
+            }
+        }
+    ],
+    "rollbacks": [
+        {
+            "name": "set network tag for instance",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.compute.actions",
+                "func": "set_instance_tags",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "instance_name": "${instance_name}",
+                    "tags_list": [
+                        "${tags_list_old}"
+                    ],
+                    "project_id": "${gcp_project_id}",
+                    "zone": "${zone}"
+                }
+            },
+            "pauses": {
+                "after": 5
+            }
+        }
+    ]
+}

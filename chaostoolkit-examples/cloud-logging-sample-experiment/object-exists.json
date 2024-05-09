@@ -1,0 +1,46 @@
+{
+    "title": "GCS file object-exists",
+    "description": "Our application should re-create a GCS file that was removed",
+
+    "contributions": {
+        "reliability": "high",
+        "availability": "high"
+    },
+      "controls": [
+        {
+            "name": "gcp-journal-logger",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.cloudlogging.controls.journal",
+                "arguments": {
+                    "labels": {
+                        "appid": "123456"
+                    }
+                }
+            }
+        }
+    ],
+    "steady-state-hypothesis": {
+        "title": "The GCS file must be around first",
+        "probes": [
+                {
+        "name": "object-exists",
+        "type": "probe",
+        "tolerance": true,
+        "provider": {
+        "type": "python",
+        "module": "chaosgcp.storage.probes",
+        "func": "object_exists",
+        "arguments": {
+          "bucket_name": "chaos-toolkit-test-bucket",
+          "object_name": "t2est.txt"
+        }
+        }
+        }
+        ]
+    },
+    "method": [
+        
+    ]
+}
+

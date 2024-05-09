@@ -1,0 +1,148 @@
+{
+    "title": "What is the impact of introducing fault in cloud run",
+    "description": "If a fault is introduced, we should see an error.",
+    "configuration": {
+        "gcp_project_id": {
+            "type": "env",
+            "key": "var_gcp_project_id"
+        },
+        "gcp_region": {
+            "type": "env",
+            "key": "var_gcp_region"
+        },
+        "ip_address_new": {
+            "type": "env",
+            "key": "var_ip_address_new"
+        },
+        "ip_address_old": {
+            "type": "env",
+            "key": "var_ip_address_old"
+        },
+        "name": {
+            "type": "env",
+            "key": "var_name"
+        },
+        "zone_name": {
+            "type": "env",
+            "key": "var_zone_name"
+        },
+        "toxiproxy_host": {
+            "type": "env",
+            "key": "var_ip_address_new"
+        },
+        "cloudrun_endpoint": {
+            "type": "env",
+            "key": "var_cloudrun_endpoint"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "app responds without any delays",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "url": "${cloudrun_endpoint}"
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+            "type": "action",
+            "name": "setup_toxiproxy_proxy",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.proxy.actions",
+                "func": "create_proxy",
+                "arguments": {
+                    "proxy_name": "proxy_test",
+                    "listen_port": 3306,
+                    "upstream_host": "${ip_address_old}",
+                    "upstream_port": 3306
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        },
+        {
+            "name": "inject-dns-recordset-update",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.dns.actions",
+                "func": "update_dns_record",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "project_id": "${gcp_project_id}",
+                    "ip_address": "${ip_address_new}",
+                    "name": "${name}",
+                    "zone_name": "${zone_name}"
+                }
+            },
+            "pauses": {
+                "after": 10
+            }
+        },
+        {
+            "type": "action",
+            "name": "create_latency_toxic",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.toxic.actions",
+                "func": "create_latency_toxic",
+                "arguments": {
+                    "for_proxy": "proxy_test",
+                    "toxic_name": "latency_toxic",
+                    "latency": 30000
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        }
+    ],
+    "rollbacks": [
+        {
+            "name": "inject-dns-recordset-update",
+            "type": "action",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.dns.actions",
+                "func": "update_dns_record",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "project_id": "${gcp_project_id}",
+                    "ip_address": "${ip_address_old}",
+                    "name": "${name}",
+                    "zone_name": "${zone_name}"
+                }
+            },
+            "pauses": {
+                "after": 2
+            }
+        },
+        {
+            "type": "action",
+            "name": "setup_toxiproxy_proxy",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.proxy.actions",
+                "func": "delete_proxy",
+                "arguments": {
+                    "proxy_name": "proxy_test"
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        }
+    ]
+}

@@ -1,0 +1,156 @@
+{
+    "title": "What is the impact of introducing fault in cloud run",
+    "description": "If a fault is introduced, we should see an error.",
+    "configuration": {
+        "gcp_project_id": {
+            "type": "env",
+            "key": "var_gcp_project_id"
+        },
+        "gcp_region": {
+            "type": "env",
+            "key": "var_gcp_region"
+        },
+        "ip_psc_endpoint_cloudsql": {
+            "type": "env",
+            "key": "var_ip_psc_endpoint_cloudsql"
+        },
+        "toxiproxy_host": {
+            "type": "env",
+            "key": "var_ilb_ip"
+        },
+        "route_name": {
+            "type": "env",
+            "key": "var_route_name"
+        },
+        "network": {
+            "type": "env",
+            "key": "var_vpc_id"
+        },
+        "src_range": {
+            "type": "env",
+            "key": "var_src_range"
+        },
+        "parent_value": {
+            "type": "env",
+            "key": "var_parent"
+        },
+        "dest_range": {
+            "type": "env",
+            "key": "var_dest_range"
+        },
+        "cloudrun_endpoint": {
+            "type": "env",
+            "key": "var_cloudrun_endpoint"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "app responds without any delays",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "url": "${cloudrun_endpoint}"
+                }
+            }
+        ]
+    },
+    "method": [
+       {
+            "type": "action",
+            "name": "setup_toxiproxy_proxy",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.proxy.actions",
+                "func": "create_proxy",
+                "arguments": {
+                    "proxy_name": "proxy_test",
+                    "listen_port": 3306,
+                    "upstream_host": "${ip_psc_endpoint_cloudsql}",
+                    "upstream_port": 3306
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        },    
+        {
+            "type": "action",
+            "name": "create_policy_based_route",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.networkconnectivity.actions",
+                "func": "create_policy_based_route",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "name": "${route_name}",
+                    "priority": 100,
+                    "network": "${network}",
+                    "parent_value": "${parent_value}",
+                    "next_hop_ilb_ip": "${toxiproxy_host}",
+		    "src_range": "${src_range}",
+		    "dest_range": "${dest_range}"
+               }
+            },
+            "pauses": {
+                "after": 5
+            }
+        },
+        {
+            "type": "action",
+            "name": "create_latency_toxic",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.toxic.actions",
+                "func": "create_latency_toxic",
+                "arguments": {
+                    "for_proxy": "proxy_test",
+                    "toxic_name": "latency_toxic",
+                    "latency": 30000 
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        }
+    ],
+    "rollbacks": [
+        {
+            "type": "action",
+            "name": "delete_toxiproxy_proxy",
+            "provider": {
+                "type": "python",
+                "module": "chaostoxi.proxy.actions",
+                "func": "delete_proxy",
+                "arguments": {
+                    "proxy_name": "proxy_test"
+                }
+            },
+            "pauses": {
+                "after": 1
+            }
+        },
+        {
+            "type": "action",
+            "name": "delete_policy_based_route",
+            "provider": {
+                "type": "python",
+                "module": "chaosgcp.networkconnectivity.actions",
+                "func": "delete_policy_based_route",
+                "secrets": [
+                    "gcp"
+                ],
+                "arguments": {
+                    "name_value": "${parent_value}/policyBasedRoutes/${route_name}"
+               }
+            },
+            "pauses": {
+                "after": 5
+            }
+        }
+    ]
+}

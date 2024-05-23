@@ -49,9 +49,8 @@ Some advantages of using the Chaos Toolkit with the GCP extension include:
 # Automation
   Automate the execution of chaos experiments to ensure consistent and frequent testing of your GCP environment.
 
- # Please note: This is not an officially supported Google product.
-
-
 This repo contains examples on how to perform Chaos Engineering using Chaos Toolkit and its GCP extension.
 
+# Please note: 
+ This is not an officially supported Google product.
 

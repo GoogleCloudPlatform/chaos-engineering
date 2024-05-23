@@ -116,8 +116,8 @@ That's it.
 
 Let us dive in.
 
-1. [Cloud SQL Experiement using DNS Fault Injection](cloudsql-cloudrun-dns-fault-injection/README.md)
-2. [Cloud SQL Experiement using PBR Fault Injection](cloudsql-cloudrun-pbr-fault-injection/README.md)
+1. [Cloud SQL Experiment using DNS Fault Injection](cloudsql-cloudrun-dns-fault-injection/README.md)
+2. [Cloud SQL Experiment using PBR Fault Injection](cloudsql-cloudrun-pbr-fault-injection/README.md)
 3. [Load Balancer Experiment running on GCE](l7ilb-urlmap-fault-injection/README.md)
 4. [Load Balancer Experiment running on GKE](l7ilb-urlmap-fault-injection-gke/README.md)
 5. [Pub/Sub Experiment](pubsub-fault-injection/README.md)

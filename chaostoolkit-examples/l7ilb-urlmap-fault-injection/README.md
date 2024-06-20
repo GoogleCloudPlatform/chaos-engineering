@@ -19,12 +19,32 @@ $ROOT_FOLDER_OF_THE_REPO
             └── 9-cleanup.sh
 ```
 
+
+# PreRequisites
+1. Make sure that you have Google CLI and Terraform installed.
+2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
+3. Clone the repository to your system and cd into `chaostoolkit-examples/l7ilb-urlmap-fault-injection/scripts` directory.
+4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources and to access the compute vm.
+```
+    Service Account Token Creator
+    Service Account User
+    Service Uasge Admin
+    IAP-secured Tunnel User
+```
+5. create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend` Please also create local folder for terraform to generate some helper scripts.
+```
+sudo mkdir -p /opt/chaostoolkit-examples/
+sudo chmod -R 777 /opt/chaostoolkit-examples
+```
+6. Make sure `Cloud Resource Manager API`, `Service Usage API` are enabled. Run the following command
+
+Steps : 
 This recipe can be run by following these steps, `cd chaostoolkit-examples/l7ilb-urlmap-fault-injection/scripts`.
 
 1. Initiate the environment, `./1-init.sh`
 
 2. Provision the application and chaos experiement,`./2-provision.sh`.
-
+Note : Wait for approx 5 mins before running experiement , ( reason : vm might be busy in booting up and installing the required packages ) 
 3. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./3-5-remote_run.sh`
 
 4. Cleanup, `./9-cleanup.sh`
@@ -110,15 +130,16 @@ On execution of this terraform module, the following infrastructure components w
 |`terraform.tfvars.template`| Defines the variables for Terraform infrastructure deployment. `setup.sh` uses this file to generate custom values for any Terraform variable(s) `terraform.tfvars` file.|
 |`variables.tf`             | For the declaration of variables, name, type, description, default values and additional meta data.|
 
-# PreRequisites
+# Manual Steps ( if not following above mentioned steps)
 1. Make sure that you have Google CLI and Terraform installed.
 2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
 3. Clone the repository to your system and cd into `chaostoolkit-examples/l7ilb-urlmap-fault-injection/app/scripts` directory.
-4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources.
+4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources and to access the compute vm.
 ```
     Service Account Token Creator
     Service Account User
-    Servie Uasge Admin
+    Service Uasge Admin
+    IAP-secured Tunnel User
 ```
 5. The following IAM permissions are required on the terraform service account to create the GCP infra resources required for this experiment, , run [createSA.sh](scripts/createSA.sh) once to create them. If new roles are identifed for the SA, please modify the scripts and run it again.
 
@@ -138,7 +159,7 @@ sudo mkdir -p /opt/chaostoolkit-examples/
 sudo chmod -R 777 /opt/chaostoolkit-examples
 ```
 
-7. Make sure `Cloud Resource Manager API`, `Cloud Usage API` are enabled. Run the following command
+7. Make sure `Cloud Resource Manager API`, `Service Usage API` are enabled. Run the following command
    ```
    ./setupApp.sh
    ```

@@ -25,7 +25,3 @@ cd ../../chaos-experiment/scripts
 ./setupChaos.sh
 cd ../terraform
 terraform init -reconfigure  -lock=false
-cd ../../chaos-experiment-gke/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false

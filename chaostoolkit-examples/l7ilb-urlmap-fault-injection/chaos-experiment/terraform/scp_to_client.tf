@@ -13,6 +13,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+resource "time_sleep" "wait_60_seconds" {
+  create_duration = "60s"
+  depends_on = [
+    google_compute_instance.client
+  ]
+}
 resource "local_file" "scp_command" {
 
   filename = "${var.folder}/copy_to_client.sh"
@@ -43,6 +49,7 @@ resource "null_resource" "scp_files" {
   depends_on = [
      google_compute_instance.client,
      local_file.scp_command,     
-     local_file.variable_config
+     local_file.variable_config,
+resource.time_sleep.wait_60_seconds
   ]
 }

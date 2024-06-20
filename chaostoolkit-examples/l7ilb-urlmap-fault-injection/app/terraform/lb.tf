@@ -99,9 +99,13 @@ resource "google_compute_instance_template" "instance_template" {
     auto_delete  = true
     boot         = true
   }
-
-  # install nginx and serve a simple web page
-  metadata = {
+ shielded_instance_config {
+    enable_integrity_monitoring = true
+    enable_secure_boot          = true
+    enable_vtpm                 = true
+  }
+    # install nginx and serve a simple web page
+ metadata = {
     startup-script = file("../scripts/server_startup.sh")
   }
 

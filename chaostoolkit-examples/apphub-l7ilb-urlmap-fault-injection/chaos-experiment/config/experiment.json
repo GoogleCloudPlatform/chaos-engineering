@@ -1,0 +1,92 @@
+{
+    "title": "What is the impact of introducing fault in L7 ILB for a backend  service's traffic",
+    "description": "If a fault is introduced, we should see an error.",
+    "tags": ["gce-ilb-fault"],
+
+    "configuration": {
+        "gcp_project_id": {
+             "type": "env",
+             "key": "var_gcp_project_id"
+        },
+        "gcp_region": {
+             "type": "env",
+             "key": "var_gcp_region"
+        },
+        "url_map_name": {
+             "type": "env",
+             "key": "var_url_map_name"
+        },
+        "url_map_target_name": {
+             "type" : "env",
+             "key" : "var_url_map_target_name"
+        },
+        "ilb_ip_address" : {
+             "type" : "env",
+             "key" : "var_url_map_ip_address"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "app responds without any delays",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "timeout": 3,
+                    "verify_tls": false,
+                    "url": "http://${ilb_ip_address}:8080/"
+                }
+            }
+           
+        ]
+    },
+    "method": [
+        {
+    "name" : "inject_fault_if_url_map_exists_app_hub",
+    "type" : "action",
+        "provider": {
+                    "type": "python",
+                "module": "chaosgcp.apphub.actions",
+                "func": "inject_fault_if_url_map_exists_app_hub",
+            "secrets": ["gcp"],
+                    "arguments": {
+                        "application_name":"myapphub-app1",
+                        "region":"us-central1",
+                        "project_id":"${gcp_project_id}",
+                        "url_map": "${url_map_name}",
+                        "target_name": "${url_map_target_name}",
+                        "target_path": "/*",
+                         "regional": true,
+                        "impacted_percentage": 100.0,
+                        "http_status": 503
+                    }
+            },
+            "pauses": {
+                    "after" : 35
+            }
+        }
+ ],
+ "rollbacks": [
+        {
+            "name" : "remove_fault_if_url_map_exists_app_hub",
+            "type" : "action",
+            "provider": {
+                            "type": "python",
+                            "module": "chaosgcp.apphub.actions",
+                            "func": "remove_fault_if_url_map_exists_app_hub",
+                            "secrets": ["gcp"],
+                            "arguments": {
+                              "application_name":"myapphub-app1",
+                              "region":"us-central1",
+                              "project_id":"${gcp_project_id}",
+                              "url_map": "${url_map_name}",
+                              "target_name": "${url_map_target_name}",
+                              "target_path": "/*",
+                              "regional" : true
+                            }
+                        }
+        }
+    ]
+}

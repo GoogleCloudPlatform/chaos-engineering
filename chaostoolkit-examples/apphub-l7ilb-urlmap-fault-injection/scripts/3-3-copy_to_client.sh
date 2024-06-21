@@ -14,14 +14,4 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+$folder/copy_to_client.sh

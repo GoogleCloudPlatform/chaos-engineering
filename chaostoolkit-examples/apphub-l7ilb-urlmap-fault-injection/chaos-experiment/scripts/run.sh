@@ -13,15 +13,5 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+source  /var/.venvs/chaostk/bin/activate
+chaos run experiment.json --var-file=variables.env

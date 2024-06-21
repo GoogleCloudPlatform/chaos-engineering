@@ -48,7 +48,7 @@ resource "google_compute_instance" "client" {
     startup-script = file("../scripts/startup-script.sh")
   }
 
-  name = "chaos-controlplane-vm"
+  name = "chaos-controlplane-vm-apphub"
 
   allow_stopping_for_update = true
 

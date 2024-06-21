@@ -13,15 +13,17 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+resource "local_file" "variable_config" {
+
+  filename = "${var.folder}/variables.env"
+  
+  content  = <<-EOT
+    var_gcp_project_id=${var.project_id}
+    var_gcp_region=${var.region}
+    var_url_map_name=${var.url_map_name}
+    var_url_map_target_name=${var.url_map_target_name}
+    var_url_map_ip_address=${var.compute_ip_address}
+    var_creds_file=serviceaccount.json
+  EOT
+
+}

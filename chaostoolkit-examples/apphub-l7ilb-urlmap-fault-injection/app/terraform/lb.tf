@@ -14,7 +14,7 @@
 #   limitations under the License.
 #
 resource "google_compute_address" "ip_address" {
-  name         = "chaos-controlplane-ipv4address"
+  name         = "chaos-controlplane-ipv4address-apphub"
   address      = var.compute_ip_address
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.ilb_subnet.id
@@ -22,7 +22,7 @@ resource "google_compute_address" "ip_address" {
 
 # forwarding rule
 resource "google_compute_forwarding_rule" "google_compute_forwarding_rule" {
-  name = "l7-ilb-forwarding-rule"
+  name = "l7-ilb-forwarding-rule-apphub"
 
   region                = var.region
   ip_address            = google_compute_address.ip_address.address
@@ -38,7 +38,7 @@ resource "google_compute_forwarding_rule" "google_compute_forwarding_rule" {
 
 # HTTP target proxy
 resource "google_compute_region_target_http_proxy" "default" {
-  name    = "l7-ilb-target-http-proxy"
+  name    = "l7-ilb-target-http-proxy-apphub"
   region  = var.region
   url_map = google_compute_region_url_map.default.id
 }
@@ -69,7 +69,7 @@ resource "google_compute_region_url_map" "default" {
 
 # backend service
 resource "google_compute_region_backend_service" "default" {
-  name = "l7-ilb-backend-subnet"
+  name = "l7-ilb-backend-subnet-apphub"
 
   region                = var.region
   protocol              = "HTTP"
@@ -86,7 +86,7 @@ resource "google_compute_region_backend_service" "default" {
 
 # instance template
 resource "google_compute_instance_template" "instance_template" {
-  name         = "l7-ilb-mig-template"
+  name         = "l7-ilb-mig-template-apphub"
   machine_type = "e2-small"
   tags         = ["http-server"]
 
@@ -116,7 +116,7 @@ resource "google_compute_instance_template" "instance_template" {
 
 # health check
 resource "google_compute_region_health_check" "default" {
-  name   = "l7-ilb-hc"
+  name   = "l7-ilb-hc-apphub"
   region = var.region
   http_health_check {
     port_specification = "USE_SERVING_PORT"
@@ -130,13 +130,13 @@ resource "google_compute_region_health_check" "default" {
 
 # MIG
 resource "google_compute_region_instance_group_manager" "mig" {
-  name   = "l7-ilb-mig"
+  name   = "l7-ilb-mig-apphub"
   region = var.region
   version {
     instance_template = google_compute_instance_template.instance_template.id
     name              = "primary"
   }
-  base_instance_name = "l7-ilb-mig"
+  base_instance_name = "l7-ilb-mig-apphub"
   target_size        = 1
   named_port {
     name = "http"

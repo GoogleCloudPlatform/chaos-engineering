@@ -24,11 +24,6 @@ sudo apt-get -y  install build-essential
 python3 -m venv /var/.venvs/chaostk
 source  /var/.venvs/chaostk/bin/activate
 python3 -m pip install -U pip
-pip3 install -U  chaostoolkit
-pip3 install -U  chaostoolkit-google-cloud-platform
 pip3 install --upgrade setuptools
-git clone https://github.com/yujunliang/chaostoolkit-google-cloud-platform
-cd chaostoolkit-google-cloud-platform/
-git pull
-pip3 install -e .
-make install-dev
+pip3 install -U chaostoolkit
+pip3 install -U chaostoolkit-google-cloud-platform

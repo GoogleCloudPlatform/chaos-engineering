@@ -13,15 +13,15 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
+#!/bin/bash
+. ../../scripts/.setEnv.sh
+
 cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+cp terraform.tfvars.template terraform.tfvars
+ 
+sed -i "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
+sed -i "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
+sed -i "s|<folder>|\"$folder\"|g" terraform.tfvars
+
+cp provider.template provider.tf
+sed -i "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf

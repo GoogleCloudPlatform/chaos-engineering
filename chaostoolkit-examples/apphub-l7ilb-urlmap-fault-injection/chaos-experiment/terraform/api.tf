@@ -13,15 +13,21 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+locals {
+  enable_apis = [
+    "iam.googleapis.com"
+  ]
+}
+
+resource "google_project_service" "enable_apis" {
+  for_each = toset(local.enable_apis)
+  project = var.project_id
+  service = each.value
+
+  timeouts {
+    create = "20m"
+    update = "20m"
+  }
+  disable_on_destroy         = false 
+  disable_dependent_services = false  
+}

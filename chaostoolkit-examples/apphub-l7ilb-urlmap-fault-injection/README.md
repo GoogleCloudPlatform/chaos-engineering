@@ -1,5 +1,6 @@
 # Overview
-This documentation illustrates the steps involved in executing an end to end proof of concept to demonstrate the ability to introduce faults in GCP L7 Load Balancer, primarily leveraging the Chaos Toolkit framework and its GCP extension. 
+This documentation illustrates the steps involved in executing an end to end proof of concept to demonstrate the ability to introduce faults in GCP L7 Load Balancer with Apphub , primarily leveraging the Chaos Toolkit framework and its GCP extension. 
+it inject_fault / remove fault in apphub application based on given url_map, if exists in application in app_hub .
 
 ## Jumpstart Guide
 
@@ -30,6 +31,7 @@ $ROOT_FOLDER_OF_THE_REPO
     Service Account User
     Service Uasge Admin
     IAP-secured Tunnel User
+    App Hub Admin
 ```
 5. create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend` Please also create local folder for terraform to generate some helper scripts.
 ```
@@ -45,9 +47,42 @@ This recipe can be run by following these steps, `cd chaostoolkit-examples/l7ilb
 
 2. Provision the application and chaos experiement,`./2-provision.sh`.
 Note : Wait for approx 5 mins before running experiement , ( reason : vm might be busy in booting up and installing the required packages ) 
-3. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./3-5-remote_run.sh`
 
-4. Cleanup, `./9-cleanup.sh`
+3. Run Below Gcloud Commands to create/attach Apphub related resource :
+
+In below commands change your project name same as where you are running the experiment .
+
+
+```
+gcloud alpha apphub service-projects add ashish-ctk-test-project \
+    --project=ashish-ctk-test-project
+
+gcloud alpha apphub applications create myapphub-app1 \
+  --display-name='myapphub-app1 for fault injection' \
+  --scope-type=REGIONAL \
+  --project=ashish-ctk-test-project \
+  --location=us-central1
+
+
+gcloud alpha apphub discovered-services list \
+  --filter='service_properties.gcp_project=projects/ashish-ctk-test-project' \
+  --project=ashish-ctk-test-project \
+  --location=us-central1
+```
+(copy manually) 
+** copy the service id of backendServices/l7-ilb-backend-subnet-apphub from output of above command :
+ID: c3040a77-d798-48b8-acf0-4a862d6b87be
+and use in below command
+
+```
+gcloud apphub applications services create l7-ilb-backend-subnet-apphub-service1 --application=myapphub-app1 --location=us-central1  --discovered-service='projects/ashish-ctk-test-project/locations/us-central1/discoveredServices/c3040a77-d798-48b8-acf0-4a862d6b87be' --display-name='l7-ilb-backend-subnet-apphub-service1' --project=ashish-ctk-test-project 
+```
+
+4. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./3-5-remote_run.sh`
+
+5. Manualy cleanup the Resources which were created in step 3.
+
+6. Cleanup, `./9-cleanup.sh`
 
 That's it. Let us dive in.
 
@@ -140,6 +175,7 @@ On execution of this terraform module, the following infrastructure components w
     Service Account User
     Service Uasge Admin
     IAP-secured Tunnel User
+    App Hub Admin
 ```
 5. The following IAM permissions are required on the terraform service account to create the GCP infra resources required for this experiment, , run [createSA.sh](scripts/createSA.sh) once to create them. If new roles are identifed for the SA, please modify the scripts and run it again.
 
@@ -220,36 +256,81 @@ Jan 31 16:45:20 debian systemd[1]: session-5.scope: Consumed 2.400s CPU time.
 Jan 31 16:45:48 debian systemd[1]: Started Session 8 of user yujunl.
 ```
 
+
+11 Run Below Gcloud Commands to create/attach Apphub related resource :
+
+In below commands change your project name same as where you are running the experiment .
+
+
+```
+gcloud alpha apphub service-projects add ashish-ctk-test-project \
+    --project=ashish-ctk-test-project
+
+gcloud alpha apphub applications create myapphub-app1 \
+  --display-name='myapphub-app1 for fault injection' \
+  --scope-type=REGIONAL \
+  --project=ashish-ctk-test-project \
+  --location=us-central1
+
+
+gcloud alpha apphub discovered-services list \
+  --filter='service_properties.gcp_project=projects/ashish-ctk-test-project' \
+  --project=ashish-ctk-test-project \
+  --location=us-central1
+```
+(copy manually) 
+** copy the service id of backendServices/l7-ilb-backend-subnet-apphub from output of above command :
+ID: c3040a77-d798-48b8-acf0-4a862d6b87be
+and use in below command
+
+```
+gcloud apphub applications services create l7-ilb-backend-subnet-apphub-service1 --application=myapphub-app1 --location=us-central1  --discovered-service='projects/ashish-ctk-test-project/locations/us-central1/discoveredServices/c3040a77-d798-48b8-acf0-4a862d6b87be' --display-name='l7-ilb-backend-subnet-apphub-service1' --project=ashish-ctk-test-project 
+```
+
+
 # Experiment Execution
 
 1. Run `./3-5-remote_run.sh` to run the experiment.
  
 2. Alternatiely, run `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh` which in turn runs `chaos run experiment.json --var-file=variables.env`. Please expect the following output.
 ```
-[2024-02-05 15:05:28 INFO] Validating the experiment's syntax
-[2024-02-05 15:05:30 INFO] Experiment looks valid
-[2024-02-05 15:05:30 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
-[2024-02-05 15:05:30 INFO] Steady-state strategy: default
-[2024-02-05 15:05:30 INFO] Rollbacks strategy: default
-[2024-02-05 15:05:30 INFO] Steady state hypothesis: Application responds
-[2024-02-05 15:05:30 INFO] Probe: app responds without any delays
-[2024-02-05 15:05:30 INFO] Steady state hypothesis is met!
-[2024-02-05 15:05:30 INFO] Playing your experiment's method now...
-[2024-02-05 15:05:30 INFO] Action: inject-fault-in-i7ilb
-[2024-02-05 15:05:39 INFO] Pausing after activity for 180s...
-[2024-02-05 15:08:39 INFO] Steady state hypothesis: Application responds
-[2024-02-05 15:08:39 INFO] Probe: app responds without any delays
-[2024-02-05 15:08:39 CRITICAL] Steady state probe 'app responds without any delays' is not in the given tolerance so failing this experiment
-[2024-02-05 15:08:39 INFO] Let's rollback...
-[2024-02-05 15:08:39 INFO] Rollback: rollback-fault-in-i7elb
-[2024-02-05 15:08:39 INFO] Action: rollback-fault-in-i7elb
-[2024-02-05 15:08:48 INFO] Experiment ended with status: deviated
-[2024-02-05 15:08:48 INFO] The steady-state has deviated, a weakness may have been discovered
+
+[2024-06-21 12:45:26 INFO] Validating the experiment's syntax
+[2024-06-21 12:45:28 INFO] Experiment looks valid
+[2024-06-21 12:45:28 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
+[2024-06-21 12:45:28 INFO] Steady-state strategy: default
+[2024-06-21 12:45:28 INFO] Rollbacks strategy: default
+[2024-06-21 12:45:28 INFO] Steady state hypothesis: Application responds
+[2024-06-21 12:45:28 INFO] Probe: app responds without any delays
+[2024-06-21 12:45:28 INFO] Steady state hypothesis is met!
+[2024-06-21 12:45:28 INFO] Playing your experiment's method now...
+[2024-06-21 12:45:28 INFO] Action: inject_fault_if_url_map_exists_app_hub
+[2024-06-21 12:45:28 INFO] Services for given Application in Apphub
+[2024-06-21 12:45:28 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
+[2024-06-21 12:45:28 INFO] Finds self_links of URL maps whose services match with given services of Application
+[2024-06-21 12:45:28 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
+[2024-06-21 12:45:28 INFO] given url_map is found within the URL maps associated with the specified AppHub application
+[2024-06-21 12:45:28 INFO] URL map 'chaos-l7-ilb-apphub' found. Proceeding with Fault Injection Action 
+[2024-06-21 12:45:38 INFO] Pausing after activity for 35s...
+[2024-06-21 12:46:13 INFO] Steady state hypothesis: Application responds
+[2024-06-21 12:46:13 INFO] Probe: app responds without any delays
+[2024-06-21 12:46:13 CRITICAL] Steady state probe 'app responds without any delays' is not in the given tolerance so failing this experiment
+[2024-06-21 12:46:13 INFO] Let's rollback...
+[2024-06-21 12:46:13 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
+[2024-06-21 12:46:13 INFO] Action: remove_fault_if_url_map_exists_app_hub
+[2024-06-21 12:46:13 INFO] Services for given Application in Apphub
+[2024-06-21 12:46:13 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
+[2024-06-21 12:46:13 INFO] Finds self_links of URL maps whose services match with given services of Application
+[2024-06-21 12:46:13 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
+[2024-06-21 12:46:13 INFO] given url_map is found within the URL maps associated with the specified AppHub application
+[2024-06-21 12:46:13 INFO] URL map 'chaos-l7-ilb-apphub' found. Proceeding with Rollback of Fault Injection Action 
+[2024-06-21 12:46:23 INFO] Experiment ended with status: deviated
+[2024-06-21 12:46:23 INFO] The steady-state has deviated, a weakness may have been discovered
 ```
 
 # CleanUp
 1. Cleanup of the experiment is included in the experiments.json file and runs automatically once the experiment is complete.
-
-2. In case any infrastructure was deployed for the testing only, run `terraform destroy` to delete the test infrastructure. Make sure that the only state file in the directory is of the test infrastructure, otherwise any other Terraform infrastructure could also be deleted accidentally.
+2. Manualy cleanup the Resources which were created in step 3.
+3. In case any infrastructure was deployed for the testing only, run `terraform destroy` to delete the test infrastructure. Make sure that the only state file in the directory is of the test infrastructure, otherwise any other Terraform infrastructure could also be deleted accidentally.
 
 You can run this script, `./9-cleanup.sh` to clean up the resoureces used by this experiement.

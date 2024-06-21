@@ -13,15 +13,26 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+locals {
+  chaos_service_account_roles = [
+   "roles/compute.loadBalancerAdmin",
+   "roles/compute.networkViewer",
+   "roles/apphub.viewer"
+  ]
+}
+
+resource "google_service_account" "chaos_service_account" {
+  account_id   = "chaos-l7ilb-apphub-sa"
+  display_name = "Chaos L7 LB Service Account"
+  
+  depends_on = [
+     google_project_service.enable_apis
+  ]
+}
+
+resource "google_project_iam_member" "project" {
+  for_each = toset(local.chaos_service_account_roles)
+  project  = var.project_id
+  member   = google_service_account.chaos_service_account.member
+  role     = each.value
+}

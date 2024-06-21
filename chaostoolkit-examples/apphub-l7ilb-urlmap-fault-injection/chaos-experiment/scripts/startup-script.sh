@@ -13,15 +13,18 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+#!/bin/bash
+sudo apt-get update
+sudo apt-get install curl -y
+sudo apt-get install python3-pip -y
+sudo apt-get -y install git-all python3 python3-venv
+sudo apt-get -y install python-dev
+sudo apt-get -y install build-essential
+
+python3 -m venv /var/.venvs/chaostk
+source  /var/.venvs/chaostk/bin/activate
+python3 -m pip install -U pip
+pip3 install --upgrade setuptools
+pip3 install -U chaostoolkit
+#pip3 install -U chaostoolkit-google-cloud-platform
+pip3 install -e git+https://github.com/ashishjain2412/chaostoolkit-google-cloud-platform#egg=chaostoolkit-google-cloud-platform

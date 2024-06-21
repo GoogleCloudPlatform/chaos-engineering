@@ -13,15 +13,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-. .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
-./.createSA.sh
-cd ../app/scripts
-./setupApp.sh
-cd ../terraform
-terraform init -reconfigure -lock=false
-cd ../../chaos-experiment/scripts
-./setupChaos.sh
-cd ../terraform
-terraform init -reconfigure  -lock=false
+resource "local_file" "check_client_log" {
+  
+  filename = "${var.folder}/check_client_log.sh"
+
+  content  =  <<-EOT
+    gcloud compute ssh --zone "${local.zone}"  "${local.name}"  --tunnel-through-iap --project "${var.project_id}" --command "cat /var/log/syslog | grep Failed; tail -f /var/log/syslog"
+  EOT
+}

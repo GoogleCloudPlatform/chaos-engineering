@@ -70,7 +70,7 @@ resource "google_compute_instance_template" "instance_template" {
     auto_delete  = true
     boot         = true
   }
-  can_ip_forward = true
+  # can_ip_forward = true
 
   # install nginx and serve a simple web page
   metadata = {
@@ -85,6 +85,12 @@ resource "google_compute_instance_template" "instance_template" {
   
   lifecycle {
     create_before_destroy = true
+  }
+
+  shielded_instance_config {
+    enable_integrity_monitoring = true
+    enable_secure_boot          = true
+    enable_vtpm                 = true
   }
 }
 # [END compute_int_tcp_udp_gce_instance_template]

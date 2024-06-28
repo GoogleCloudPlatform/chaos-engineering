@@ -19,17 +19,35 @@ $ROOT_FOLDER_OF_THIS_REPO
             └── 9-cleanup.sh
 ```
 
-This recipe can be run by following these steps, `cd chaostoolkit-examples/cloudsql-cloudrun-dns-fault-injection/scripts`
+# Pre-requisites
+1. Make sure that you have Google CLI and Terraform installed.
+2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
+3. Clone the repository to your system and cd into `chaostoolkit-examples/gke-pod-fault-injection/app/scripts` directory.
+4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources.
+```
+    Service Account Token Creator
+    Service Account User
+    Servie Uasge Admin
+    IAP-secured Tunnel User
+```
+5. Please create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend`.
+
+# Experiment Execution
+This recipe can be run by following these steps, `cd chaostoolkit-examples/cloudsql-cloudrun-dns-fault-injection/scripts`.
 
 1. Initiate the environment, `./1-init.sh`
 
 2. Provision the application and chaos experiement,`./2-provision.sh`
 
+**Note** Allow ~2 minutes for the GCE client to boot up and finish downloading all the dependencies before running the experiment.
+
 3. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./3-5remote_run.sh`
 
 4. Cleanup, `./9-cleanup.sh`
 
-That's it. Let us dive in.
+**Note** If you face any permission issue, please run this command: `chmod -R 777 <path_to_experiment_folder>`
+
+To dive deeper into each of these steps and have more fine grained control of the functionalities being executed, please follow the `Manual Experiment Execution` section.
 
 ## The Steady State Application
 
@@ -127,16 +145,19 @@ On execution of this terraform module, the following infrastructure components w
 |`variables.tf`             | For the declaration of variables, name, type, description, default values and additional meta data|
 
 
-## PreRequisites
-1. Make sure that you have Google CLI and Terraform installed.
-2. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources.
+# Manual Experiment Execution
+1. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
+2. Clone the repository to your system and cd into `chaostoolkit-examples/cloudsql-cloudrun-dns-fault-injection/app/scripts` directory.
+3. Make sure that you have Google CLI and Terraform installed.
+4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources.
 ```
     Service Account Token Creator
     Service Account User
     Servie Uasge Admin
+    IAP-secured Tunnel User
 ```
 
-3. The following IAM permissions are required on the terraform service account to create the GCP infra resources required for this experiment, run [createSA.sh](scripts/createSA.sh) once to create them. If new roles are identifed for the SA, please modify the scripts and run it again.
+5. The following IAM permissions are required on the terraform service account to create the GCP infra resources required for this experiment, run [createSA.sh](scripts/createSA.sh) once to create them. If new roles are identifed for the SA, please modify the scripts and run it again.
 
 ```
     Compute Admin
@@ -155,23 +176,20 @@ On execution of this terraform module, the following infrastructure components w
     Service Usage Admin
     Cloud Build Service Account
     Viewer
+    Logs Writer
+    Storage Object Viewer
 ```
 
-4. Make sure these APIs are enabled, `Cloud Resource Manager API`, and `Service Usage API`. These services are required by Terraform to run `terraform plan`.
+6. Make sure these APIs are enabled, `Cloud Resource Manager API`, and `Service Usage API`. These services are required by Terraform to run `terraform plan`.
 
-5. If it doesn't exist, please create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend`. Please also create local folder for terraform to generate some helper scripts.
+7. If it doesn't exist, please create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend`. Please also create local folder for terraform to generate some helper scripts.
 ```
 sudo mkdir -p /opt/chaostoolkit-examples/
 sudo chmod -R 777 /opt/chaostoolkit-examples
 ```
-
-## Experiment Execution
-
-1. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
-2. Clone the repository to your system and cd into `chaostoolkit-examples/cloudsql-cloudrun-dns-fault-injection/app/scripts` directory.
-3. For deploying new infrastructure only, `terrform.tfvars.tempalte` file will be used for generating `terraform.tfvars`. You don't need to change anything in that file.  For information regarding the resources created by terraform and the variables required, pls check [Terraform README.md](terraform/README.md)
-4. In case pre-existing testing infrastructure exists, skip to step 7.
-5. Run command, `./setupApp.sh`. The service account for terraform will be created for you, and generate `terraform/terraform.tfvars` with default values.Please make a note of the Service Account created for running the experiment from terraform output. A [service account key](https://cloud.google.com/iam/docs/keys-create-delete?_ga=2.31241532.-2014251715.1702981216) for the service account is created by terraform. This will be used for running the experiment. In case the Infra is pre-existing, please use a service account with the following IAM roles:
+8. For deploying new infrastructure only, `terrform.tfvars.template` file will be used for generating `terraform.tfvars`. You don't need to change anything in that file.  For information regarding the resources created by terraform and the variables required, pls check [Terraform README.md](terraform/README.md)
+9. In case pre-existing testing infrastructure exists, skip to step 7.
+10. Run command, `./setupApp.sh`. The service account for terraform will be created for you, and generate `terraform/terraform.tfvars` with default values.Please make a note of the Service Account created for running the experiment from terraform output. A [service account key](https://cloud.google.com/iam/docs/keys-create-delete?_ga=2.31241532.-2014251715.1702981216) for the service account is created by terraform. This will be used for running the experiment. In case the Infra is pre-existing, please use a service account with the following IAM roles:
 
 ```
    Cloud Run Invoker
@@ -183,11 +201,11 @@ sudo chmod -R 777 /opt/chaostoolkit-examples
    DNS Administrator
 ``` 
 
-6. cd into `chaostoolkit-examples/cloudsql-cloudrun--dnsfault-injection/app/terraform`, and run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created, and `terraform apply` to deploy the infrastructure on the set project. Your testing infrastructure should now be ready. 
+11. cd into `chaostoolkit-examples/cloudsql-cloudrun--dnsfault-injection/app/terraform`, and run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created, and `terraform apply` to deploy the infrastructure on the set project. Your testing infrastructure should now be ready. 
 
-7. cd into `../../chaos-experiment/scripts` directory. Run the following command, `./setupChaos.sh`.
+12. cd into `../../chaos-experiment/scripts` directory. Run the following command, `./setupChaos.sh`.
      
-8. cd into `chaostoolkit-examples/cloudsql-cloudrun--dnsfault-injection/chaos-experiment/terraform`, and run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created, and `terraform apply` to create choas experience resources. 
+13. cd into `chaostoolkit-examples/cloudsql-cloudrun--dnsfault-injection/chaos-experiment/terraform`, and run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created, and `terraform apply` to create choas experience resources. 
 
 The following files will be generated under `$folder` folder defined in `.setEnv.sh`.
 
@@ -238,7 +256,7 @@ For example, run  `(scripts) $  ./3-1-check_client_log.sh`
 
 This indicates that the client completed installing chaos toolket and dependencies. You can proceed to the next steps:
 
-10. Run experiment remotely using `./3-5-remote_run.sh` or SSH to client VM by using `./3-4-ssh_to_client.sh` and from the client VM, run `./run.sh` which in turn runs `chaos run experiment.json --var-file=variables.env`, expect the following output:
+14. Run experiment remotely using `./3-5-remote_run.sh` or SSH to client VM by using `./3-4-ssh_to_client.sh` and from the client VM, run `./run.sh` which in turn runs `chaos run experiment.json --var-file=variables.env`, expect the following output:
 
 ```
    [2024-02-01 04:56:25 INFO] Validating the experiment's syntax

@@ -19,6 +19,7 @@ locals {
     "compute.googleapis.com",
     "networkconnectivity.googleapis.com",
     "secretmanager.googleapis.com",
+    "cloudbuild.googleapis.com"
   ]
 }
 

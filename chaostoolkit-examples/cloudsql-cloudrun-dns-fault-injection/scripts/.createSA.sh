@@ -36,7 +36,9 @@ roles=("roles/compute.admin" \
        "roles/secretmanager.admin" \
        "roles/resourcemanager.projectIamAdmin" \
        "roles/cloudbuild.builds.builder" \
-       "roles/viewer")
+       "roles/viewer" \
+       "roles/logging.logWriter" \
+       "roles/storage.objectViewer")
 
 for role in ${roles[@]};
 do

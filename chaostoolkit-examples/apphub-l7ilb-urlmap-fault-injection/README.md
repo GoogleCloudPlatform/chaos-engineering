@@ -9,7 +9,7 @@ Here is the directory structure
 ```
 $ROOT_FOLDER_OF_THE_REPO
 └── chaostoolkit-examples
-    └── l7ilb-urlmap-fault-injection
+    └── apphub-l7ilb-urlmap-fault-injection
         └── scripts
             ├── 1-init.sh
             ├── 2-provision.sh
@@ -24,7 +24,7 @@ $ROOT_FOLDER_OF_THE_REPO
 # PreRequisites
 1. Make sure that you have Google CLI and Terraform installed.
 2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
-3. Clone the repository to your system and cd into `chaostoolkit-examples/l7ilb-urlmap-fault-injection/scripts` directory.
+3. Clone the repository to your system and cd into `chaostoolkit-examples/apphub-l7ilb-urlmap-fault-injection/scripts` directory.
 4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources and to access the compute vm.
 ```
     Service Account Token Creator
@@ -41,7 +41,7 @@ sudo chmod -R 777 /opt/chaostoolkit-examples
 6. Make sure `Cloud Resource Manager API`, `Service Usage API` are enabled. Run the following command
 
 Steps : 
-This recipe can be run by following these steps, `cd chaostoolkit-examples/l7ilb-urlmap-fault-injection/scripts`.
+This recipe can be run by following these steps, `cd chaostoolkit-examples/apphub-l7ilb-urlmap-fault-injection/scripts`.
 
 1. Initiate the environment, `./1-init.sh`
 
@@ -168,7 +168,7 @@ On execution of this terraform module, the following infrastructure components w
 # Manual Steps ( if not following above mentioned steps)
 1. Make sure that you have Google CLI and Terraform installed.
 2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
-3. Clone the repository to your system and cd into `chaostoolkit-examples/l7ilb-urlmap-fault-injection/app/scripts` directory.
+3. Clone the repository to your system and cd into `chaostoolkit-examples/apphub-l7ilb-urlmap-fault-injection/app/scripts` directory.
 4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources and to access the compute vm.
 ```
     Service Account Token Creator
@@ -204,7 +204,7 @@ sudo chmod -R 777 /opt/chaostoolkit-examples
 9. Run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created.  run `terraform apply` to deploy the infrastructure on the set project. Your testing infrastructure should now be ready. Please note the Service Account created for running the experiment from terraform output. Terraform code will [Create a service account key](https://cloud.google.com/iam/docs/keys-create-delete) in a local file `../chaos-experiment-config/serviceaccount.json` for the service account created by terraform. This will be used for running the experiment. In case the Infra is pre-existing, please use a service account with `roles/compute.networkViewer` and `roles/compute.loadBalancerAdmin` permissions for this purpose. 
 
 
-10. cd into `chaostoolkit-examples/l7ilb-urlmap-fault-injection/chaos-experiment/scripts` directory. Run the following command
+10. cd into `chaostoolkit-examples/apphub-l7ilb-urlmap-fault-injection/chaos-experiment/scripts` directory. Run the following command
 ```
     ./setupChaos.sh
 ```
@@ -226,7 +226,7 @@ Scripts under this  directory can be used to call those generated scripts
 ```
 $ROOT_FOLDER_OF_THE_REPO
 └── chaostoolkit-examples
-    └── l7ilb-urlmap-fault-injection
+    └── apphub-l7ilb-urlmap-fault-injection
         └── scripts
             ├── 1-init.sh
             ├── 2-provision.sh
@@ -326,6 +326,38 @@ gcloud apphub applications services create l7-ilb-backend-subnet-apphub-service1
 [2024-06-21 12:46:13 INFO] URL map 'chaos-l7-ilb-apphub' found. Proceeding with Rollback of Fault Injection Action 
 [2024-06-21 12:46:23 INFO] Experiment ended with status: deviated
 [2024-06-21 12:46:23 INFO] The steady-state has deviated, a weakness may have been discovered
+```
+
+If URL map is not aviable in apphub appilcation backend service , fault will not be injected, expect below output
+
+```[2024-06-28 08:19:20 INFO] Validating the experiment's syntax
+[2024-06-28 08:19:22 INFO] Experiment looks valid
+[2024-06-28 08:19:22 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
+[2024-06-28 08:19:22 INFO] Steady-state strategy: default
+[2024-06-28 08:19:22 INFO] Rollbacks strategy: default
+[2024-06-28 08:19:22 INFO] Steady state hypothesis: Application responds
+[2024-06-28 08:19:22 INFO] Probe: app responds without any delays
+[2024-06-28 08:19:22 INFO] Steady state hypothesis is met!
+[2024-06-28 08:19:22 INFO] Playing your experiment's method now...
+[2024-06-28 08:19:22 INFO] Action: inject_fault_if_url_map_exists_app_hub
+[2024-06-28 08:19:22 INFO] Services for given Application in Apphub
+[2024-06-28 08:19:23 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
+[2024-06-28 08:19:23 INFO] Finds self_links of URL maps whose services match with given services of Application
+[2024-06-28 08:19:23 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
+[2024-06-28 08:19:23 INFO] URL map 'dummy_chaos-l7-ilb-apphub' not found, Can't Proceed Further
+[2024-06-28 08:19:23 INFO] Pausing after activity for 35s...
+[2024-06-28 08:19:58 INFO] Steady state hypothesis: Application responds
+[2024-06-28 08:19:58 INFO] Probe: app responds without any delays
+[2024-06-28 08:19:58 INFO] Steady state hypothesis is met!
+[2024-06-28 08:19:58 INFO] Let's rollback...
+[2024-06-28 08:19:58 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
+[2024-06-28 08:19:58 INFO] Action: remove_fault_if_url_map_exists_app_hub
+[2024-06-28 08:19:58 INFO] Services for given Application in Apphub
+[2024-06-28 08:19:58 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
+[2024-06-28 08:19:58 INFO] Finds self_links of URL maps whose services match with given services of Application
+[2024-06-28 08:19:58 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
+[2024-06-28 08:19:58 INFO] URL map 'dummy_chaos-l7-ilb-apphub' not found, Can't RollBack 
+[2024-06-28 08:19:58 INFO] Experiment ended with status: completed
 ```
 
 # CleanUp

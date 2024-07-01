@@ -13,6 +13,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+resource "time_sleep" "wait_60_seconds" {
+  create_duration = "60s"
+  depends_on = [
+    google_compute_instance.pubsubtestclient
+  ]
+}
 resource "local_file" "scp_command" {
 
   filename = "${var.folder}/copy_to_client.sh"
@@ -42,5 +48,7 @@ resource "terraform_data" "scp_files" {
     google_compute_instance.pubsubtestclient,
     local_file.scp_command,
     local_file.variable_config,
+    resource.time_sleep.wait_60_seconds
+
   ]
 }

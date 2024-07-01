@@ -21,15 +21,34 @@ $ROOT_FOLDER_OF_THE_REPO
             └── 9-cleanup.sh
 ```
 
-This recipe can be run by following these steps, `cd chaostoolkit-examples/pubsub-fault-injection/scripts`
+# PreRequisites
+1. Make sure that you have Google CLI and Terraform installed.
+2. Login to GCP project using `gcloud auth login` on the terminal to execute terraform resources and set the project.
+3. Clone the repository to your system and cd into `chaostoolkit-examples/pubsub-fault-injection/scripts` directory.
+4. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources and to access the compute vm.
+```
+    Service Account Token Creator
+    Service Account User
+    Service Usage Admin
+    IAP-secured Tunnel User
+```
+5. create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend` Please also create local folder for terraform to generate some helper scripts.
+```
+sudo mkdir -p /opt/chaostoolkit-examples/
+sudo chmod -R 777 /opt/chaostoolkit-examples
+```
+6. Make sure `Cloud Resource Manager API`, `Service Usage API` are enabled. Run the following command
 
-1. Initiate the environment, `./init.sh`
+Steps : 
+This recipe can be run by following these steps, `cd chaostoolkit-examples/pubsub-fault-injection/scripts`.
 
-2. Provision the application and chaos experiement,`./provision.sh`
+1. Initiate the environment, `./1-init.sh`
 
-3. Experiment Execution, `./ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./remote_run.sh`
+2. Provision the application and chaos experiement,`./2-provision.sh`.
+Note : Wait for approx 5 mins before running experiement , ( reason : vm might be busy in booting up and installing the required packages ) 
+3. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh`, or you can just run `./3-5-remote_run.sh`
 
-4. Cleanup, `./cleanup.sh`
+4. Cleanup, `./9-cleanup.sh`
 
 That's it. Let us dive in.
 
@@ -122,13 +141,15 @@ On execution of this terraform module, the following infrastructure components w
 |`terraform.tfvars.template`| Defines the actual value of variables for Terraform infrastructure deployment. Use this file to plug in custom values for any Terraform variable(s). `../setup.sh` use it to generate `terraform.tfvars`.|
 |`variables.tf`             | For the declaration of variables, name, type, descriptiI hope yoon, default values and additional meta data.|
 
-## PreRequisites
+Manual Steps ( if not following above mentioned steps)
 1. Make sure that you have Google CLI and Terraform installed.
 2. The GCP user to run the experiment should have the permissions to impersonate the terraform service account used to create the resources.
 ```
     Service Account Token Creator
     Service Account User
-    Servie Uasge Admin
+    Service Usage Admin
+    IAP-secured Tunnel User
+
 ```
 
 3. The following IAM permissions are required on the terraform service account to create the GCP infra resources required for this experiment, run [createSA.sh](scripts/createSA.sh) once to create them. If new roles are identifed for the SA, please modify the scripts and run it again.
@@ -142,6 +163,9 @@ On execution of this terraform module, the following infrastructure components w
     Service Usage Consumer
     Create Service Account
     Delete Service Account
+    Service Account User
+    Service Account token creator
+    Service Account Key Admin
 ```
 4. If it doesn't exist, please create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend` Please also create local folder for terraform to generate some helper scripts.
 ```
@@ -156,10 +180,19 @@ sudo chmod -R 777 /opt/chaostoolkit-examples
 4. In case pre-existing testing infrastructure exists, skip to step 6.
 5. Run [setupApp.sh](app/scripts/setupApp.sh) to create this service account. Then cd into `terraform` folder and run `terraform init` to initialize Terraform, `terraform validate` to validate the configuration, `terraform plan` to visualize the components that will be created, and `terraform apply` to deploy the infrastructure on the set project. Your testing infrastructure should now be ready. Please make a note of the project_id, server_IP and client_IP created for running the experiment from terraform output. Terraform will create a [service account key](https://cloud.google.com/iam/docs/keys-create-delete?_ga=2.31241532.-2014251715.1702981216) for the service account created by terraform. This will be used for running the experiment. Incase the Infra is pre-existing, please use a service account with the following IAM roles:
 ```
-    roles/compute.instanceAdmin.v1 
-    roles/pubsub.admin
-    roles/pubsub.publisher 
-    roles/dns.admin
+       "roles/compute.admin" \
+       "roles/compute.networkAdmin" \
+       "roles/pubsub.admin" \
+       "roles/pubsub.editor" \
+       "roles/dns.admin" \
+       "roles/dns.reader" \
+       "roles/monitoring.editor" \
+       "roles/resourcemanager.projectIamAdmin" \
+       "roles/iam.serviceAccountAdmin" \
+       "roles/serviceusage.serviceUsageAdmin" \
+       "roles/iam.serviceAccountUser" \
+       "roles/iam.serviceAccountTokenCreator" \
+       "roles/iam.serviceAccountKeyAdmin"
 ```
     
 The following are all the commands in the item 5.
@@ -194,7 +227,7 @@ As the last step in the startup script, it will run `python3 flask_server.py <gc
 
     To increase the performance of the tunnel, consider installing NumPy. For instructions,
     please see https://cloud.google.com/iap/docs/using-tcp-forwarding#increasing_the_tcp_upload_bandwidth
-	
+    
     Warning: Permanently added 'compute.6419179147882177425' (ECDSA) to the list of known hosts.
     Jan 24 16:03:26 debian systemd[9110]: Listening on GnuPG cryptographic agent and passphrase cache (access for web browsers).
     Jan 24 16:03:26 debian systemd[9110]: Listening on GnuPG cryptographic agent and passphrase cache (restricted).
@@ -268,7 +301,7 @@ You can proceed to run `(scripts) $ ./3-1-check_client_log.sh`
     Jan 31 17:26:05 debian dhclient[459]: XMT: Solicit on ens4, interval 125840ms.
 ```
 
-This indicates that the client completed installing chaos toolket and dependencies. You can proceed to the next steps:
+This indicates that the client completed installing chaos toolkit and dependencies. You can proceed to the next steps:
 
 6. You can run `./3-5-remote_run.sh` to run experiment. Alternatively, you can use `./3-4-ssh_to_client.sh` to SSH to client machine. When you are in the shell of client machine, you can run the folowing experiment,
 

@@ -30,6 +30,9 @@ roles=("roles/compute.admin" \
        "roles/resourcemanager.projectIamAdmin" \
        "roles/iam.serviceAccountAdmin" \
        "roles/serviceusage.serviceUsageAdmin" \
+       "roles/iam.serviceAccountUser" \
+       "roles/iam.serviceAccountTokenCreator" \
+       "roles/iam.serviceAccountKeyAdmin"
        ) 
 for role in ${roles[@]}; 
 do

@@ -1,0 +1,44 @@
+{
+    "title": "GKE Pod Experiment",
+    "description": "App should respond even if a Pod is deleted",
+    "configuration": {
+        "lb_ip" : {
+             "type" : "env",
+             "key" : "var_lb_ip"
+        },
+        "namespace":{
+            "type": "env",
+            "key": "var_namespace"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "app responds without any delays",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "timeout": 3,
+                    "verify_tls": false,
+                    "url": "http://${lb_ip}:80/"
+                }
+            }
+        ]
+    },
+    "method": [
+        {
+	"name" : "Kill Pod",
+	"type" : "action",
+        "provider": {
+            		"type": "python",
+		        "module": "chaosk8s.pod.actions",
+		        "func": "terminate_pods",
+	                "arguments": {
+                        "ns": "${namespace}"
+		            }
+        	}
+        }
+ ]
+}

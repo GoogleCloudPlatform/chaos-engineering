@@ -1,0 +1,87 @@
+{
+    "title": "MIG Experiment",
+    "description": "MIG should respond even if one of its VM goes down.",
+    "tags": ["gce-ilb-fault"],
+
+    "configuration": {
+        "gcp_project_id": {
+             "type": "env",
+             "key": "var_gcp_project_id"
+        },
+        "gcp_region": {
+             "type": "env",
+             "key": "var_gcp_region"
+        },
+        "url_map_name": {
+             "type": "env",
+             "key": "var_url_map_name"
+        },
+        "url_map_target_name": {
+             "type" : "env",
+             "key" : "var_url_map_target_name"
+        },
+        "ilb_ip_address" : {
+             "type" : "env",
+             "key" : "var_url_map_ip_address"
+        },
+        "gcp_zone": {
+            "type": "env",
+            "key": "var_gcp_zone"
+        },
+        "gce_instance_name":{
+            "type": "env",
+            "key": "var_gce_instance_name"
+        }
+    },
+    "steady-state-hypothesis": {
+        "title": "Application responds",
+        "probes": [
+            {
+                "type": "probe",
+                "name": "app responds without any delays",
+                "tolerance": 200,
+                "provider": {
+                    "type": "http",
+                    "timeout": 3,
+                    "verify_tls": false,
+                    "url": "http://${ilb_ip_address}:8080/"
+                }
+            }
+           
+        ]
+    },
+    "method": [
+        {
+	"name" : "Suspend VM",
+	"type" : "action",
+        "provider": {
+            		"type": "python",
+		        "module": "chaosgcp.compute.actions",
+		        "func": "suspend_vm_instance",
+	                "arguments": {
+            		    "project_id": "${gcp_project_id}",
+		                "zone": "${gcp_zone}",
+                	    "instance_name": "${gce_instance_name}"
+		            }
+        	}
+        }
+ ],
+ "rollbacks": [
+    {
+        "name" : "Resume suspended VM",
+        "type" : "action",
+            "provider": {
+                    "type": "python",
+                    "module": "chaosgcp.compute.actions",
+                    "func": "resume_vm_instance",
+                    "arguments": {
+            		    "project_id": "${gcp_project_id}",
+		                "zone": "${gcp_zone}",
+                	    "instance_name": "${gce_instance_name}"
+		            }
+                }
+    }
+]
+}
+
+

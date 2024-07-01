@@ -21,7 +21,8 @@ locals {
     "sql-component.googleapis.com",
     "sqladmin.googleapis.com",
     "vpcaccess.googleapis.com",
-    "secretmanager.googleapis.com"
+    "secretmanager.googleapis.com",
+    "cloudbuild.googleapis.com"
   ]
 }
 

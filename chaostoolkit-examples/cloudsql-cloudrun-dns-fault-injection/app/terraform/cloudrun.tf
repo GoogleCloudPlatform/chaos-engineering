@@ -37,7 +37,9 @@ resource "null_resource" "build" {
   provisioner "local-exec" {
     command = <<-EOT
         cd ../cloudruncode
-        gcloud builds submit --tag=gcr.io/${var.project_id}/simple-web-app
+        gcloud builds submit --tag=gcr.io/${var.project_id}/simple-web-app \
+          --service-account=projects/${var.project_id}/serviceAccounts/${var.tf_service_account} \
+          --default-buckets-behavior=regional-user-owned-bucket
       EOT
   }
 

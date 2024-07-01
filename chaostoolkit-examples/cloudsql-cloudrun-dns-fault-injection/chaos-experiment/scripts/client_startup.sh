@@ -26,9 +26,9 @@ source  /var/.venvs/chaostk/bin/activate
 pip3 install -U chaostoolkit
 pip3 install -U chaostoolkit-toxiproxy
 pip3 install -U google-cloud-network-connectivity
-git clone https://github.com/yujunliang/chaostoolkit-google-cloud-platform
-cd chaostoolkit-google-cloud-platform/
-git pull
-pip3 install -e .
-make install-dev
-
+# git clone https://github.com/yujunliang/chaostoolkit-google-cloud-platform
+# cd chaostoolkit-google-cloud-platform/
+# git pull
+# pip3 install -e .
+# make install-dev
+pip3 install -U chaostoolkit-google-cloud-platform

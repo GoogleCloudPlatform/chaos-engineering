@@ -37,10 +37,11 @@ resource "null_resource" "build" {
   provisioner "local-exec" {
     command = <<-EOT
         cd ../cloudruncode
-        gcloud builds submit --tag=gcr.io/${var.project_id}/simple-pbr-app:${local.version}
+        gcloud builds submit --tag=gcr.io/${var.project_id}/simple-pbr-app:${local.version} \
+          --service-account=projects/${var.project_id}/serviceAccounts/${var.tf_service_account} \
+          --default-buckets-behavior=regional-user-owned-bucket
       EOT
   }
-
 
   depends_on = [
      google_sql_database_instance.cloudsql,

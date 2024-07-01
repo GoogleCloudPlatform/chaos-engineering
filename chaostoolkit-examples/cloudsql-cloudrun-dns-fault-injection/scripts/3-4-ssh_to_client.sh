@@ -14,4 +14,4 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-$folder/ssh_to_client.sh
+sh $folder/ssh_to_client.sh

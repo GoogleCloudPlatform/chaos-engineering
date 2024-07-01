@@ -15,7 +15,7 @@
 #
 #!/bin/bash
 export PROJECT_ID=$(gcloud config get-value project)
-export SA_NAME="terraform-cloudsql-sa"
+export SA_NAME="terraform-cloudsql-pbr-sa"
 export MEMBER="$SA_NAME@$PROJECT_ID.iam.gserviceaccount.com" 
 
 gcloud iam service-accounts create $SA_NAME \
@@ -38,7 +38,9 @@ roles=("roles/compute.admin" \
        "roles/secretmanager.admin" \
        "roles/resourcemanager.projectIamAdmin" \
        "roles/cloudbuild.builds.builder" \
-       "roles/viewer")
+       "roles/viewer" \
+       "roles/logging.logWriter" \
+       "roles/storage.objectViewer")
 
 for role in ${roles[@]};
 do

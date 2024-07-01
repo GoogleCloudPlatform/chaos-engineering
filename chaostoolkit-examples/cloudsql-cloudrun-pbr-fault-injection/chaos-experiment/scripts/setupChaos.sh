@@ -28,17 +28,17 @@ export VPC_ID=`terraform output vpc_id | tr -d '"'`
 cd ../../chaos-experiment/terraform
 cp terraform.tfvars.template terraform.tfvars
  
-sed -i "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
-sed -i "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
-sed -i "s/<output.ip_psc_endpoint_cloudsql>/\"$PSC_IP\"/g" terraform.tfvars
-sed -i "s/<output.region>/\"$REGION\"/g" terraform.tfvars
-sed -i "s/<output.zone>/\"$ZONE\"/g" terraform.tfvars
-sed -i "s|<output.subnet_id>|\"$SUBNET_ID\"|g" terraform.tfvars
-sed -i "s|<output.consumer_subnet_cidr>|\"$SUBNET_CIDR\"|g" terraform.tfvars
-sed -i "s|<output.vpc_id>|\"$VPC_ID\"|g" terraform.tfvars
-sed -i "s|<output.vpcconnrange>|\"$VPC_CON\"|g" terraform.tfvars
-sed -i "s|<output.cloudrun_endpoint>|\"$CLOUDRUN\"|g" terraform.tfvars
-sed -i "s|<folder>|\"$folder\"|g" terraform.tfvars
+sed -i "" "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
+sed -i "" "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
+sed -i "" "s/<output.ip_psc_endpoint_cloudsql>/\"$PSC_IP\"/g" terraform.tfvars
+sed -i "" "s/<output.region>/\"$REGION\"/g" terraform.tfvars
+sed -i "" "s/<output.zone>/\"$ZONE\"/g" terraform.tfvars
+sed -i "" "s|<output.subnet_id>|\"$SUBNET_ID\"|g" terraform.tfvars
+sed -i "" "s|<output.consumer_subnet_cidr>|\"$SUBNET_CIDR\"|g" terraform.tfvars
+sed -i "" "s|<output.vpc_id>|\"$VPC_ID\"|g" terraform.tfvars
+sed -i "" "s|<output.vpcconnrange>|\"$VPC_CON\"|g" terraform.tfvars
+sed -i "" "s|<output.cloudrun_endpoint>|\"$CLOUDRUN\"|g" terraform.tfvars
+sed -i "" "s|<folder>|\"$folder\"|g" terraform.tfvars
 
 cp provider.template provider.tf
-sed -i "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
+sed -i "" "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf

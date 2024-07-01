@@ -14,4 +14,4 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-$folder/remote_run.sh
+sh $folder/remote_run.sh

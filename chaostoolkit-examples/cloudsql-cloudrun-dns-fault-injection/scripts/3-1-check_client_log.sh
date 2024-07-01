@@ -14,4 +14,4 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-$folder/check_client_log.sh 
+sh $folder/check_client_log.sh 

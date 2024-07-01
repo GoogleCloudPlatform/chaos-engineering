@@ -17,6 +17,11 @@
 . .setEnv.sh
 sudo mkdir -p $folder
 sudo chmod 777 $folder
+
+# API pre-reqs
+gcloud services enable cloudresourcemanager.googleapis.com --project "$PROJECT_ID" --no-user-output-enabled
+gcloud services enable serviceusage.googleapis.com --project "$PROJECT_ID" --no-user-output-enabled
+
 ./.createSA.sh
 cd ../app/scripts
 ./setupApp.sh

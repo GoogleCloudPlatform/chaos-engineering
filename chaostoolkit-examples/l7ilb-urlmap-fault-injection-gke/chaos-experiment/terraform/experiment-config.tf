@@ -20,6 +20,42 @@ resource "local_file" "yaml_config" {
   content  = <<-EOT
     ---
     apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: l7b-ksa
+      namespace: chaostoolkit-run
+
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: my-role
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      verbs:
+      - "get"
+      - "delete"
+      - "list"
+
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: my-role
+      namespace: default
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: my-role
+    subjects:
+    - kind: ServiceAccount
+      name: l7b-ksa
+      namespace: chaostoolkit-run
+    ---
+    apiVersion: v1
     kind: ConfigMap
     metadata:
       name: chaostoolkit-experiment
@@ -59,7 +95,6 @@ resource "local_file" "yaml_config" {
                        "type": "python",
                        "module": "chaosgcp.lb.actions",
                        "func": "inject_traffic_faults",
-                       "secrets": ["gcp"],
                        "arguments": {
                            "url_map": "${var.url_map_name}",
                            "target_name": "${var.url_map_target_name}",
@@ -76,13 +111,12 @@ resource "local_file" "yaml_config" {
           ],
           "rollbacks": [
               {
-                "name" : "rollback-fault-in-i7elb",
+                "name" : "rollback-fault-in-i7ilb",
                 "type" : "action",
                 "provider": {
                             "type": "python",
                             "module": "chaosgcp.lb.actions",
                             "func": "remove_fault_injection_traffic_policy",
-                            "secrets": ["gcp"],
                             "arguments": {
                                 "url_map": "${var.url_map_name}",
                                 "target_name": "${var.url_map_target_name}",
@@ -102,9 +136,15 @@ resource "local_file" "yaml_config" {
     spec:
       serviceaccount:
         name: l7b-ksa
+      role:
+        name: my-role
+        bind: my-role
       namespace: chaostoolkit-run
       pod:
         image: "gcr.io/${var.project_id}/chaostoolkit"
+        experiment:
+          configMapName: chaostoolkit-experiment
+          configMapExperimentFileName: experiment.json
+      
   EOT
-
 }

@@ -20,6 +20,17 @@ locals {
   ]
 }
 
+data "google_compute_default_service_account" "default" {
+}
+
+resource "google_project_iam_binding" "compute_sa" {
+project = var.project_id
+role =  "roles/artifactregistry.reader"
+members = [
+  "serviceAccount:${data.google_compute_default_service_account.default.email}"
+]
+}
+
 resource "google_service_account" "app_service_account" {
   account_id   = "app-l7ilb-gke-sa"
   display_name = "app L7 LB Service Account"

@@ -27,7 +27,10 @@ roles=("roles/compute.admin" \
        "roles/iam.serviceAccountTokenCreator" \
        "roles/iam.serviceAccountKeyAdmin" \
        "roles/serviceusage.serviceUsageAdmin" \
-       "roles/viewer") 
+       "roles/viewer" \
+       "roles/logging.logWriter" \
+       "roles/storage.objectAdmin" \
+       "roles/artifactregistry.writer") 
 for role in ${roles[@]}; 
 do
     gcloud projects add-iam-policy-binding $PROJECT_ID \

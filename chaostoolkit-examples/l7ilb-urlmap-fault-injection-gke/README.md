@@ -24,6 +24,7 @@ This recipe can be run by following these steps, `cd chaostoolkit-examples/l7ilb
 2. Provision the application and chaos experiement,since this experiment runs on GKE cluster, it will ask you whether you want to provision the GKE clusters.`./2-provision.sh`
 
 3. Experiment Execution, `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./gke_deploy.sh` and then use `./kubectl_logs.sh` to show the logs. 
+**NOTE** If you see the pod status as `Unscheduleable and 1 more issue`, wait for sometime for it to change to `Running` state before executing `./kubeclt_logs.sh`.
 
 You can use `switch_to_autopolit.sh` and `switch_to_standard.sh` to switch the experiment to run on autopilot or standard clusters.
 
@@ -149,6 +150,9 @@ On execution of this terraform module, the following infrastructure components w
     Service Account User
     Service Usage Admin
     Viewer
+    Logging Writer
+    Storage Object Admin
+    Artifact Registry Writer
     ```
 6. If it doesn't exist, please create a GCS Bucket for Terraform Backend for the project, the name need to be `${project-Id}-terraform-backend`. For example, if the project id you work on is `chaos-test-project-410715`, then the bucket name should be `chaos-test-project-410715-terraform-backend` Please also create local folder for terraform to generate some helper scripts.
 ```
@@ -197,6 +201,7 @@ This recipe can be run by following these steps, `cd chaostoolkit-examples/l7ilb
 # Experiment Execution
  
 Run `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./gke_deploy.sh` and then use `./kubectl_logs.sh` to show the logs. Please expect the following output.
+**NOTE** If you see the pod status as `Unscheduleable and 1 more issue`, wait for sometime for it to change to `Running` state before executing `./kubeclt_logs.sh`.
 ```
 [2024-02-05 15:05:28 INFO] Validating the experiment's syntax
 [2024-02-05 15:05:30 INFO] Experiment looks valid

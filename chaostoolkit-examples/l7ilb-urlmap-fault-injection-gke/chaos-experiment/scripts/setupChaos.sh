@@ -24,14 +24,14 @@ echo $COMPUTE_IP
 cd ../../chaostoolkit-examples/l7ilb-urlmap-fault-injection-gke/chaos-experiment/terraform
 cp terraform.tfvars.template terraform.tfvars
  
-sed -i "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
-sed -i "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
-sed -i "s|<vm-name>|\"$VM_NAME\"|g" terraform.tfvars
-sed -i "s|<gke-network-self-link>|\"$GKE_NETWORK\"|g" terraform.tfvars
-sed -i "s|<folder>|\"$folder\"|g" terraform.tfvars
+sed -i "" "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
+sed -i "" "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
+sed -i "" "s|<vm-name>|\"$VM_NAME\"|g" terraform.tfvars
+sed -i "" "s|<gke-network-self-link>|\"$GKE_NETWORK\"|g" terraform.tfvars
+sed -i "" "s|<folder>|\"$folder\"|g" terraform.tfvars
 
 cp provider.template provider.tf
-sed -i "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
+sed -i "" "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
 
 cd ../../app/terraform
 export COMPUTE_IP=`terraform output compute_ip_address | tr -d '"'`
@@ -42,10 +42,10 @@ export APP_NETWORK=`terraform output app_network_self_link | tr -d  '"'`
 echo $COMPUTE_IP
 cd ../../chaos-experiment/terraform
 
-sed -i "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
-sed -i "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
-sed -i "s/<compute-ip-address>/\"$COMPUTE_IP\"/g" terraform.tfvars
-sed -i "s|<subnet-id>|\"$SUBNET_ID\"|g" terraform.tfvars
-sed -i "s|<gcp-vpc-name>|\"$VPC_NAME\"|g" terraform.tfvars
-sed -i "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
-sed -i "s|<app-network-self-link>|\"$APP_NETWORK\"|g" terraform.tfvars
+sed -i "" "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
+sed -i "" "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
+sed -i "" "s/<compute-ip-address>/\"$COMPUTE_IP\"/g" terraform.tfvars
+sed -i "" "s|<subnet-id>|\"$SUBNET_ID\"|g" terraform.tfvars
+sed -i "" "s|<gcp-vpc-name>|\"$VPC_NAME\"|g" terraform.tfvars
+sed -i "" "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
+sed -i "" "s|<app-network-self-link>|\"$APP_NETWORK\"|g" terraform.tfvars

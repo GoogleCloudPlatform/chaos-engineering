@@ -54,6 +54,7 @@
                     "arguments": {
                         "application_name":"myapphub-app1",
                         "region":"us-central1",
+                        "host_project_id":"${gcp_project_id}",
                         "project_id":"${gcp_project_id}",
                         "url_map": "${url_map_name}",
                         "target_name": "${url_map_target_name}",
@@ -80,6 +81,7 @@
                             "arguments": {
                               "application_name":"myapphub-app1",
                               "region":"us-central1",
+                              "host_project_id":"${gcp_project_id}",
                               "project_id":"${gcp_project_id}",
                               "url_map": "${url_map_name}",
                               "target_name": "${url_map_target_name}",

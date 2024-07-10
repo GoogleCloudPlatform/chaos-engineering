@@ -51,7 +51,7 @@ Note : Wait for approx 5 mins before running experiement , ( reason : vm might b
 3. Run Below Gcloud Commands to create/attach Apphub related resource :
 
 In below commands change your project name same as where you are running the experiment .
-
+Change the host_project if apphub application resides in different project. Make sure it Have proper permission to access the resoorce . 
 
 ```
 gcloud alpha apphub service-projects add ashish-ctk-test-project \
@@ -294,70 +294,55 @@ gcloud apphub applications services create l7-ilb-backend-subnet-apphub-service1
  
 2. Alternatiely, run `./3-4-ssh_to_client.sh` to ssh to the client VM, then run `./run.sh` which in turn runs `chaos run experiment.json --var-file=variables.env`. Please expect the following output.
 ```
-
-[2024-06-21 12:45:26 INFO] Validating the experiment's syntax
-[2024-06-21 12:45:28 INFO] Experiment looks valid
-[2024-06-21 12:45:28 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
-[2024-06-21 12:45:28 INFO] Steady-state strategy: default
-[2024-06-21 12:45:28 INFO] Rollbacks strategy: default
-[2024-06-21 12:45:28 INFO] Steady state hypothesis: Application responds
-[2024-06-21 12:45:28 INFO] Probe: app responds without any delays
-[2024-06-21 12:45:28 INFO] Steady state hypothesis is met!
-[2024-06-21 12:45:28 INFO] Playing your experiment's method now...
-[2024-06-21 12:45:28 INFO] Action: inject_fault_if_url_map_exists_app_hub
-[2024-06-21 12:45:28 INFO] Services for given Application in Apphub
-[2024-06-21 12:45:28 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
-[2024-06-21 12:45:28 INFO] Finds self_links of URL maps whose services match with given services of Application
-[2024-06-21 12:45:28 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
-[2024-06-21 12:45:28 INFO] given url_map is found within the URL maps associated with the specified AppHub application
-[2024-06-21 12:45:28 INFO] URL map 'chaos-l7-ilb-apphub' found. Proceeding with Fault Injection Action 
-[2024-06-21 12:45:38 INFO] Pausing after activity for 35s...
-[2024-06-21 12:46:13 INFO] Steady state hypothesis: Application responds
-[2024-06-21 12:46:13 INFO] Probe: app responds without any delays
-[2024-06-21 12:46:13 CRITICAL] Steady state probe 'app responds without any delays' is not in the given tolerance so failing this experiment
-[2024-06-21 12:46:13 INFO] Let's rollback...
-[2024-06-21 12:46:13 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
-[2024-06-21 12:46:13 INFO] Action: remove_fault_if_url_map_exists_app_hub
-[2024-06-21 12:46:13 INFO] Services for given Application in Apphub
-[2024-06-21 12:46:13 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
-[2024-06-21 12:46:13 INFO] Finds self_links of URL maps whose services match with given services of Application
-[2024-06-21 12:46:13 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
-[2024-06-21 12:46:13 INFO] given url_map is found within the URL maps associated with the specified AppHub application
-[2024-06-21 12:46:13 INFO] URL map 'chaos-l7-ilb-apphub' found. Proceeding with Rollback of Fault Injection Action 
-[2024-06-21 12:46:23 INFO] Experiment ended with status: deviated
-[2024-06-21 12:46:23 INFO] The steady-state has deviated, a weakness may have been discovered
+[2024-07-08 10:59:52 INFO] Validating the experiment's syntax
+[2024-07-08 10:59:54 INFO] Experiment looks valid
+[2024-07-08 10:59:54 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
+[2024-07-08 10:59:54 INFO] Steady-state strategy: default
+[2024-07-08 10:59:54 INFO] Rollbacks strategy: default
+[2024-07-08 10:59:54 INFO] Steady state hypothesis: Application responds
+[2024-07-08 10:59:54 INFO] Probe: app responds without any delays
+[2024-07-08 10:59:54 INFO] Steady state hypothesis is met!
+[2024-07-08 10:59:54 INFO] Playing your experiment's method now...
+[2024-07-08 10:59:54 INFO] Action: inject_fault_if_url_map_exists_app_hub
+[2024-07-08 10:59:54 INFO] Getting attached Services of given Application in Apphub
+[2024-07-08 10:59:54 INFO] Given URL map 'chaos-l7-ilb-apphub' found in given Apphub Application. Proceeding with Fault Injection Action 
+[2024-07-08 11:00:04 INFO] Pausing after activity for 35s...
+[2024-07-08 11:00:39 INFO] Steady state hypothesis: Application responds
+[2024-07-08 11:00:39 INFO] Probe: app responds without any delays
+[2024-07-08 11:00:39 CRITICAL] Steady state probe 'app responds without any delays' is not in the given tolerance so failing this experiment
+[2024-07-08 11:00:39 INFO] Let's rollback...
+[2024-07-08 11:00:39 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
+[2024-07-08 11:00:39 INFO] Action: remove_fault_if_url_map_exists_app_hub
+[2024-07-08 11:00:39 INFO] Getting attached Services of given Application in Apphub
+[2024-07-08 11:00:39 INFO] URL map 'chaos-l7-ilb-apphub' - Rollback of Fault Injection Action 
+[2024-07-08 11:00:49 INFO] Experiment ended with status: deviated
+[2024-07-08 11:00:49 INFO] The steady-state has deviated, a weakness may have been discovered
 ```
 
-If URL map is not aviable in apphub appilcation backend service , fault will not be injected, expect below output
+If URL map is not available in apphub appilcation backend service , fault will not be injected, expect below output
 
-```[2024-06-28 08:19:20 INFO] Validating the experiment's syntax
-[2024-06-28 08:19:22 INFO] Experiment looks valid
-[2024-06-28 08:19:22 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
-[2024-06-28 08:19:22 INFO] Steady-state strategy: default
-[2024-06-28 08:19:22 INFO] Rollbacks strategy: default
-[2024-06-28 08:19:22 INFO] Steady state hypothesis: Application responds
-[2024-06-28 08:19:22 INFO] Probe: app responds without any delays
-[2024-06-28 08:19:22 INFO] Steady state hypothesis is met!
-[2024-06-28 08:19:22 INFO] Playing your experiment's method now...
-[2024-06-28 08:19:22 INFO] Action: inject_fault_if_url_map_exists_app_hub
-[2024-06-28 08:19:22 INFO] Services for given Application in Apphub
-[2024-06-28 08:19:23 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
-[2024-06-28 08:19:23 INFO] Finds self_links of URL maps whose services match with given services of Application
-[2024-06-28 08:19:23 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
-[2024-06-28 08:19:23 INFO] URL map 'dummy_chaos-l7-ilb-apphub' not found, Can't Proceed Further
-[2024-06-28 08:19:23 INFO] Pausing after activity for 35s...
-[2024-06-28 08:19:58 INFO] Steady state hypothesis: Application responds
-[2024-06-28 08:19:58 INFO] Probe: app responds without any delays
-[2024-06-28 08:19:58 INFO] Steady state hypothesis is met!
-[2024-06-28 08:19:58 INFO] Let's rollback...
-[2024-06-28 08:19:58 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
-[2024-06-28 08:19:58 INFO] Action: remove_fault_if_url_map_exists_app_hub
-[2024-06-28 08:19:58 INFO] Services for given Application in Apphub
-[2024-06-28 08:19:58 INFO] /projects/ashish-ctk-test-project/regions/us-central1/backendServices/l7-ilb-backend-subnet-apphub
-[2024-06-28 08:19:58 INFO] Finds self_links of URL maps whose services match with given services of Application
-[2024-06-28 08:19:58 INFO] https://www.googleapis.com/compute/v1/projects/ashish-ctk-test-project/regions/us-central1/urlMaps/chaos-l7-ilb-apphub
-[2024-06-28 08:19:58 INFO] URL map 'dummy_chaos-l7-ilb-apphub' not found, Can't RollBack 
-[2024-06-28 08:19:58 INFO] Experiment ended with status: completed
+```[2024-07-08 11:05:27 INFO] Validating the experiment's syntax
+[2024-07-08 11:05:28 INFO] Experiment looks valid
+[2024-07-08 11:05:28 INFO] Running experiment: What is the impact of introducing fault in L7 ILB for a backend  service's traffic
+[2024-07-08 11:05:28 INFO] Steady-state strategy: default
+[2024-07-08 11:05:28 INFO] Rollbacks strategy: default
+[2024-07-08 11:05:28 INFO] Steady state hypothesis: Application responds
+[2024-07-08 11:05:28 INFO] Probe: app responds without any delays
+[2024-07-08 11:05:28 INFO] Steady state hypothesis is met!
+[2024-07-08 11:05:28 INFO] Playing your experiment's method now...
+[2024-07-08 11:05:28 INFO] Action: inject_fault_if_url_map_exists_app_hub
+[2024-07-08 11:05:28 INFO] Getting attached Services of given Application in Apphub
+[2024-07-08 11:05:29 ERROR]   => failed: chaoslib.exceptions.ActivityFailed: Given URL map 'dummy_chaos-l7-ilb-apphub' not found in given Apphub Application, Cannot Inject Fault
+[2024-07-08 11:05:29 INFO] Pausing after activity for 35s...
+[2024-07-08 11:06:04 INFO] Steady state hypothesis: Application responds
+[2024-07-08 11:06:04 INFO] Probe: app responds without any delays
+[2024-07-08 11:06:04 INFO] Steady state hypothesis is met!
+[2024-07-08 11:06:04 INFO] Let's rollback...
+[2024-07-08 11:06:04 INFO] Rollback: remove_fault_if_url_map_exists_app_hub
+[2024-07-08 11:06:04 INFO] Action: remove_fault_if_url_map_exists_app_hub
+[2024-07-08 11:06:04 INFO] Getting attached Services of given Application in Apphub
+[2024-07-08 11:06:05 ERROR]   => failed: chaoslib.exceptions.ActivityFailed: Given URL map 'dummy_chaos-l7-ilb-apphub' not found, RollBack not required
+[2024-07-08 11:06:05 INFO] Experiment ended with status: completed
 ```
 
 # CleanUp

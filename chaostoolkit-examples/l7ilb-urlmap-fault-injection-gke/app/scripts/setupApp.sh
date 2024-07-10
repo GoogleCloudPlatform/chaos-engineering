@@ -19,9 +19,9 @@
 cd ../terraform
 cp terraform.tfvars.template terraform.tfvars
  
-sed -i "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
-sed -i "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
-sed -i "s|<folder>|\"$folder\"|g" terraform.tfvars
+sed -i "" "s/<gcp-project-id>/\"$PROJECT_ID\"/g" terraform.tfvars
+sed -i "" "s/<terraform-service-account>/\"$MEMBER\"/g" terraform.tfvars
+sed -i "" "s|<folder>|\"$folder\"|g" terraform.tfvars
 
 cp provider.template provider.tf
-sed -i "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf
+sed -i "" "s/<gcp-project-id>/$PROJECT_ID/g" provider.tf

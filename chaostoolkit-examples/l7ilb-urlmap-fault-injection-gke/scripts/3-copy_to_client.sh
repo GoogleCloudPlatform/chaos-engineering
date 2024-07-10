@@ -14,4 +14,4 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-$folder/copy_to_client.sh
+sh $folder/copy_to_client.sh

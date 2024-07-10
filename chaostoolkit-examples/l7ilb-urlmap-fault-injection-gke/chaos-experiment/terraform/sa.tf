@@ -36,3 +36,10 @@ resource "google_project_iam_member" "project" {
   member   = google_service_account.chaos_service_account.member
   role     = each.value
 }
+
+resource "google_project_iam_member" "gke-sa" {
+  project = var.project_id
+  member = "serviceAccount:${var.project_id}.svc.id.goog[chaostoolkit-run/l7b-ksa]"
+  role = "roles/compute.loadBalancerAdmin"
+}
+

@@ -27,7 +27,9 @@ resource "null_resource" "build" {
   provisioner "local-exec" {
     command = <<-EOT
         cd ../docker
-        gcloud builds submit --tag=gcr.io/${var.project_id}/chaostoolkit
+        gcloud builds submit --tag=gcr.io/${var.project_id}/chaostoolkit \
+          --service-account=projects/${var.project_id}/serviceAccounts/${var.tf_service_account} \
+          --default-buckets-behavior=regional-user-owned-bucket
       EOT
   }
 

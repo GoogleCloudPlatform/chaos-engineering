@@ -17,6 +17,10 @@
 sudo mkdir -p $folder
 sudo chmod 777 $folder
 
+# API pre-reqs
+gcloud services enable cloudresourcemanager.googleapis.com --project "$PROJECT_ID" --no-user-output-enabled
+gcloud services enable serviceusage.googleapis.com --project "$PROJECT_ID" --no-user-output-enabled
+
 cd ../../../gke-chaostoolkit-operator/scripts;
 while true; do
 	read -p "Do you wish to init GKE cluster as well(Yes/No)? " yn

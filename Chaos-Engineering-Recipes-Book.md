@@ -2,8 +2,7 @@
 
 Authors: Parag Doshi (GCC NA Team), Ashish Jain (GSD). Satya Singh (GSD)
 
-
-## Introduction {#introduction}
+## Introduction
 
 In today's fast-paced digital world, ensuring the resilience and reliability of applications and services is critical. Chaos Engineering is a discipline that helps organizations proactively identify weaknesses in their systems before they manifest as costly outages or failures. Chaos Engineering involves introducing controlled, real-world disruptions into a system to test its robustness, recoverability, and fault tolerance.
 
@@ -12,42 +11,41 @@ This document provides recipes of different experiments that use the Chaos Toolk
 ## Please note: 
  This is not an officially supported Google product.
  
-## Chaos Engineering Concepts {#chaos-engineering-concepts}
-
+## Chaos Engineering Concepts 
 Chaos Engineering uses these concepts to define and create fault injection programs.
 
 
-### Experiment {#experiment}
+### Experiment 
 
 A **chaos experiment** is an intentional, planned process through which faults are injected into a system to learn how it responds.
 
 
-### Steady State Hypothesis {#steady-state-hypothesis}
+### Steady State Hypothesis 
 
 A Steady State Hypothesis describes “what normal looks like” for your system
 
 
-### Actions {#actions}
+### Actions 
 
 An action is a particular activity that needs to be enacted on the system under experimentation.
 
 
-### Probes {#probes}
+### Probes 
 
 A probe is a way of observing a particular set of conditions in the system that is undergoing experimentation.
 
 
-### Rollback {#rollback}
+### Rollback 
 
 An experiment may define a sequence of actions that revert what was undone during the experiment.
 
 
-## How to Use This Guide {#how-to-use-this-guide}
+## How to Use This Guide 
 
 Each recipe is stand alone and you can jump to relevant recipes based on either the scenario or targeting a specific GCP service. Each recipe has different sections that summarize the use case and provide relevant links to Google Cloud Platform Chaos Engineering repository. Each experiment has a Readme.md file that provides step-by-step guidance for executing the experiment. The recipe also includes the repo link for the source code of the experiment and the action/probes used by the experiment.
 
 
-### Code Repositories {#code-repositories}
+### Code Repositories 
 
 There are three main repositories that are used by these recipes:
 
@@ -61,46 +59,43 @@ There are three main repositories that are used by these recipes:
 
 
 
-## Recipe: Injecting Fault in L7 Load Balancer {#recipe-injecting-fault-in-l7-load-balancer}
+## Recipe: Injecting Fault in L7 Load Balancer 
 
 
-### Overview  {#overview}
+### Overview  
 
 This recipe is suitable for applications or APIs that are configured as backend service on a GCP [L7 internal application load balancer](https://cloud.google.com/load-balancing/docs/l7-internal). A simple web application is configured to run on a GCE VM that is configured as a backend service on a L7 Internal Application Load Balancer. Fault is injected by adding a fault injection policy to the [route](https://cloud.google.com/load-balancing/docs/l7-internal/traffic-management#route_actions) of the load balancer’s [URL Map](https://cloud.google.com/load-balancing/docs/url-map-concepts) resource so that requests that match a particular url pattern path matcher are shown a 503 error. This recipe will also work on L7 external load balancers.
 
-<b>>>>>>GDCALERT:inline image link here (to images/image1.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image1.png "image_tooltip")
 
 
 
-### GCP/Open Source Services Used  {#gcp-open-source-services-used}
+### GCP/Open Source Services Used  
 
 [L7 Internal Load Balancer](https://cloud.google.com/load-balancing/docs/l7-internal), [URL Maps](https://cloud.google.com/load-balancing/docs/url-map-concepts), [Managed Instance Groups](https://cloud.google.com/compute/docs/instance-groups), [Compute Engine VM](https://cloud.google.com/compute/docs/overview), [Chaos Toolkit](https://chaostoolkit.org/reference/tutorial/)
 
 
-### Fault Injected in GCP Service {#fault-injected-in-gcp-service}
+### Fault Injected in GCP Service 
 
 [URL Map of the Load Balancer](https://cloud.google.com/load-balancing/docs/url-map-concepts)
 
 
-### Architecture Diagram {#architecture-diagram}
+### Architecture Diagram 
 
 
-#### Steady State Architecture {#steady-state-architecture}
+#### Steady State Architecture 
 
-<b>>>>>>GDCALERT:inline image link here (to images/image2.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image2.png "image_tooltip")
 
 
 
-#### Fault Injection Architecture {#fault-injection-architecture}
+#### Fault Injection Architecture 
 
-<b>>>>>>GDCALERT:inline image link here (to images/image3.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image3.png "image_tooltip")
 
 
 
-### Links {#links}
+### Links 
 
 
 #### [Readme file](https://github.com/GoogleCloudPlatform/chaos-engineering/blob/main/chaostoolkit-examples/l7ilb-urlmap-fault-injection/README.md)  {#readme-file}
@@ -132,14 +127,12 @@ This recipe demonstrates how to inject latency between an application and a data
 
 #### Steady State Architecture {#steady-state-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image4.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image4.png "image_tooltip")
 
 
 
 #### Fault Injection Architecture {#fault-injection-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image5.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image5.png "image_tooltip")
 
 
@@ -186,14 +179,12 @@ The chaos toolkit extension is installed on the GCE client. This toolkit creates
 
 #### Steady State Architecture {#steady-state-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image6.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image6.png "image_tooltip")
 
 
 
 #### Fault Injection Architecture {#fault-injection-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image7.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image7.png "image_tooltip")
 
 
@@ -233,7 +224,6 @@ This control can be used to improve the security of Chaos Toolkit experiments by
 ### Architecture Diagram {#architecture-diagram}
 
 
-    <b>>>>>>GDCALERT:inline image link here (to images/image8.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image8.png "image_tooltip")
 
 
@@ -299,14 +289,12 @@ An MIG with two GCE instances was created for this experiment. One of the backen
 
 #### Steady State Architecture {#steady-state-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image9.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image9.png "image_tooltip")
 
 
 
 #### Fault Injection Architecture {#fault-injection-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image10.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image10.png "image_tooltip")
 
 
@@ -355,14 +343,12 @@ A GKE cluster with three nodes was created for this experiment. One of the pods 
 
 #### Steady State Architecture {#steady-state-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image11.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image11.png "image_tooltip")
 
 
 
 #### Fault Injection Architecture {#fault-injection-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image12.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image12.png "image_tooltip")
 
 
@@ -415,14 +401,12 @@ The fault injected in this experiment targets the GCP L7 Internal Load Balancer 
 
 #### Steady State Architecture {#steady-state-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image13.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image13.png "image_tooltip")
 
 
 
 #### Fault Injection Architecture {#fault-injection-architecture}
 
-<b>>>>>>GDCALERT:inline image link here (to images/image14.png). Store image on your image server and adjust path/filename/extension if necessary.>>>>></b>
 ![alt_text](images/image14.png "image_tooltip")
 
 

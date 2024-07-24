@@ -9,7 +9,9 @@ In today's fast-paced digital world, ensuring the resilience and reliability of 
 
 This document provides recipes of different experiments that use the Chaos Toolkit framework along with the Google Cloud Platform (GCP) extension of the Chaos Toolkit, demonstrating how it can be used to create impactful chaos experiments within the GCP ecosystem. 
 
-
+## Please note: 
+ This is not an officially supported Google product.
+ 
 ## Chaos Engineering Concepts {#chaos-engineering-concepts}
 
 Chaos Engineering uses these concepts to define and create fault injection programs.

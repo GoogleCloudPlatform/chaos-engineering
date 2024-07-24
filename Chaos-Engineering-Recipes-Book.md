@@ -149,17 +149,16 @@ The experiment is aimed at injecting a simple fault in the Policy Based routes. 
 
 ### GCP/Open Source Services Used 
 
-
-    [Chaos Toolkit](https://chaostoolkit.org/)
-
-
-    [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
+   [Chaos Toolkit](https://chaostoolkit.org/)
 
 
-    [GCP Cloud SQL](https://cloud.google.com/sql/docs/introduction?_gl=1*hkvv02*_up*MQ..&gclid=CjwKCAjwvvmzBhA2EiwAtHVrbxG3DZ5RGkcWB8KfDB3N0OHVsJL7KcTvbAPDV7yuwqGAmvOGDxWTThoC22YQAvD_BwE&gclsrc=aw.ds)
+   [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
 
 
-    [GCP Cloud Run](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
+   [GCP Cloud SQL](https://cloud.google.com/sql/docs/introduction?_gl=1*hkvv02*_up*MQ..&gclid=CjwKCAjwvvmzBhA2EiwAtHVrbxG3DZ5RGkcWB8KfDB3N0OHVsJL7KcTvbAPDV7yuwqGAmvOGDxWTThoC22YQAvD_BwE&gclsrc=aw.ds)
+
+
+   [GCP Cloud Run](https://cloud.google.com/run/docs/overview/what-is-cloud-run)
 
 
 ### Fault Injected in GCP Service 
@@ -255,19 +254,19 @@ The experiment is aimed at injecting a simple fault in an MIG and checking if it
 ### GCP/Open Source Services Used 
 
 
-    [Chaos Toolkit](https://chaostoolkit.org/)
+   [Chaos Toolkit](https://chaostoolkit.org/)
 
 
-    [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
+   [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
 
 
-    [GCP Internal L7 Load Balancer](https://cloud.google.com/load-balancing/docs/l7-internal)
+   [GCP Internal L7 Load Balancer](https://cloud.google.com/load-balancing/docs/l7-internal)
 
 
-    [GCP Managed Instance Groups](https://cloud.google.com/compute/docs/instance-groups)
+   [GCP Managed Instance Groups](https://cloud.google.com/compute/docs/instance-groups)
 
-
-    [GCP Compute Engine VMs](https://cloud.google.com/compute/docs/instances)
+ 
+   [GCP Compute Engine VMs](https://cloud.google.com/compute/docs/instances)
 
 
 ### Fault Injected in GCP Service  
@@ -314,13 +313,13 @@ The experiment is aimed at injecting a simple fault in a GKE pod and checking if
 [Chaos Toolkit](https://chaostoolkit.org/)
 
 
-    [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
+   [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
 
 
-    [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview)
+   [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview)
 
 
-    [GCP Compute Engine VMs](https://cloud.google.com/compute/docs/instances)
+   [GCP Compute Engine VMs](https://cloud.google.com/compute/docs/instances)
 
 
 ### Fault Injected in GCP Service 
@@ -364,19 +363,19 @@ This recipe demonstrates a chaos engineering experiment that injects faults into
 ### GCP/Open Source Services Used  
 
 
-    [Chaos Toolkit](https://chaostoolkit.org/)
+   [Chaos Toolkit](https://chaostoolkit.org/)
 
 
-    [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
+   [Chaos Toolkit Google Cloud Driver](https://chaostoolkit.org/drivers/gcp/)  
 
 
-    [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview)
+   [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview)
 
 
-    [GCP Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal)
+   [GCP Internal Load Balancer](https://cloud.google.com/load-balancing/docs/internal)
 
 
-    [Google Compute Engine](https://cloud.google.com/compute/docs)
+   [Google Compute Engine](https://cloud.google.com/compute/docs)
 
 
 ### Fault Injected in GCP Service 

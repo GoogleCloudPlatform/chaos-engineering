@@ -181,7 +181,7 @@ The chaos toolkit extension is installed on the GCE client. This toolkit creates
 
 
 
-### Links {#links}
+### Links  
 
 
 #### [Readme File](https://github.com/GoogleCloudPlatform/chaos-engineering/blob/main/chaostoolkit-examples/cloudsql-cloudrun-pbr-fault-injection/README.md) 
@@ -241,7 +241,7 @@ https://github.com/chaostoolkit-incubator/chaostoolkit-google-cloud-platform/tre
 ### Links 
 
 
-#### [IAM Policy Control Code](https://github.com/chaostoolkit-incubator/chaostoolkit-google-cloud-platform/tree/master/chaosgcp/iam/controls)  {#iam-policy-control-code}
+#### [IAM Policy Control Code](https://github.com/chaostoolkit-incubator/chaostoolkit-google-cloud-platform/tree/master/chaosgcp/iam/controls) 
 
 
 ## Recipe: Injecting Fault in Managed Instance Group (MIG) 
@@ -345,7 +345,7 @@ A GKE cluster with three nodes was created for this experiment. One of the pods 
 ### Links 
 
 
-#### [Readme File](https://github.com/GoogleCloudPlatform/chaos-engineering/blob/main/chaostoolkit-examples/gke-pod-fault-injection/README.md) {#readme-file}
+#### [Readme File](https://github.com/GoogleCloudPlatform/chaos-engineering/blob/main/chaostoolkit-examples/gke-pod-fault-injection/README.md) 
 
 
 #### [Experiment Code](https://github.com/GoogleCloudPlatform/chaos-engineering/blob/main/chaostoolkit-examples/gke-pod-fault-injection/chaos-experiment/config/experiment.json) 

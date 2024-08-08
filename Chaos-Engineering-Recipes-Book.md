@@ -1,6 +1,6 @@
 **Chaos Engineering Recipes Book**
 
-Authors: Parag Doshi (GCC NA Team), Ashish Jain (GSD). Satya Singh (GSD)
+
 
 ## Introduction
 

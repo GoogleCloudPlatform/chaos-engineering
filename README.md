@@ -51,7 +51,7 @@ Some advantages of using the Chaos Toolkit with the GCP extension include:
 
 This repo contains examples on how to perform Chaos Engineering using Chaos Toolkit and its GCP extension.
 
-The recipies are listed [here](Chaos-Engineering-Recipes-Book.md)
+The recipes are listed [here](Chaos-Engineering-Recipes-Book.md)
 # Please note: 
  This is not an officially supported Google product.
 

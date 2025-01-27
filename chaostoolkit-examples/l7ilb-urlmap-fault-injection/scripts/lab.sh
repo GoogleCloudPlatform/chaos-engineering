@@ -24,3 +24,9 @@ gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
 gsutil mb gs://${GOOGLE_CLOUD_PROJECT}-terraform-backend
 sudo mkdir -p /opt/chaostoolkit-examples/
 sudo chmod -R 777 /opt/chaostoolkit-examples
+
+./1-init.sh
+sleep 60
+echo "provisioning .."
+./2-provision.sh
+

@@ -1,8 +1,9 @@
-jq 'del(.rollbacks)' ../chaos-experiment/config/experiment.json >../chaos-experiment/config/o_experiment.json
+jq 'del(.rollbacks) | .method[0].pauses.after = 135' ../chaos-experiment/config/experiment.json >../chaos-experiment/config/o_experiment.json
 mv ../chaos-experiment/config/o_experiment.json ../chaos-experiment/config/experiment.json
 
 sudo chmod -R 777 ~/chaos-engineering
-
+sleep 60
+echo "Starting up...."
 student_user=$(gcloud config get-value account)
 
 gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
@@ -26,7 +27,7 @@ sudo mkdir -p /opt/chaostoolkit-examples/
 sudo chmod -R 777 /opt/chaostoolkit-examples
 
 ./1-init.sh
-sleep 60
 echo "provisioning .."
+sleep 60
 ./2-provision.sh
 

@@ -22,7 +22,7 @@ gcloud projects add-iam-policy-binding ${GOOGLE_CLOUD_PROJECT} \
 --member="user:${student_user}" \
 --role='roles/iap.tunnelResourceAccessor'
 
-gsutil mb gs://${GOOGLE_CLOUD_PROJECT}-terraform-backend
+gcloud storage buckets create gs://${GOOGLE_CLOUD_PROJECT}-terraform-backend
 sudo mkdir -p /opt/chaostoolkit-examples/
 sudo chmod -R 777 /opt/chaostoolkit-examples
 
@@ -30,4 +30,3 @@ sudo chmod -R 777 /opt/chaostoolkit-examples
 echo "provisioning .."
 sleep 60
 ./2-provision.sh
-

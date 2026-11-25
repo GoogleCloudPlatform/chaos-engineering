@@ -15,8 +15,10 @@
 #
 #!/bin/bash
 . .setEnv.sh
-sudo mkdir $folder
-sudo chmod 777 $folder
+
+sudo mkdir -p "$folder"
+sudo chown -R "$(id -u):$(id -g)" "$folder"
+chmod 700 "$folder"
 
 ./.createSA.sh
 cd ../app/scripts

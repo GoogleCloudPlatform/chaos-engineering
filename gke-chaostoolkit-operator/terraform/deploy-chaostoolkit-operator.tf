@@ -16,6 +16,8 @@
 resource "local_file" "switch_to_standard" {
   
   filename = "${var.folder}/switch-to-standard.sh"
+  file_permission      = "0700"
+  directory_permission = "0700"
 
   content  =  <<-EOT
     #!/bin/bash
@@ -29,6 +31,8 @@ resource "local_file" "switch_to_standard" {
 resource "local_file" "deploy" {
   
   filename = "${var.folder}/deploy-operator.sh"
+  file_permission      = "0700"
+  directory_permission = "0700"
 
   content  =  <<-EOT
     #!/bin/bash
@@ -47,8 +51,10 @@ resource "local_file" "deploy" {
 resource "local_file" "switch_to_autopilot" {
   
   filename = "${var.folder}/switch-to-autopilot.sh"
-
-  content  =  <<-EOT
+  file_permission      = "0700"
+  directory_permission = "0700"
+  
+content  =  <<-EOT
     #!/bin/bash
     gcloud container clusters get-credentials ${local.autopilot} --region=${var.region} --project=${var.project_id}
   EOT
@@ -60,7 +66,9 @@ resource "local_file" "switch_to_autopilot" {
 resource "local_file" "copy_command" {
 
   filename = "${var.folder}/copy_command.sh"
-  
+  file_permission      = "0700"
+  directory_permission = "0700"
+
   content  = <<-EOT
     #!/bin/bash
     for i in {0..10}
@@ -89,7 +97,9 @@ resource "local_file" "copy_command" {
 resource "local_file" "deploy_to_standard" {
 
   filename = "${var.folder}/deploy-to-standard.sh"
-  
+  file_permission      = "0700"
+  directory_permission = "0700"
+
   content  = <<-EOT
     #!/bin/bash
     gcloud compute ssh --zone "${local.zone}"  "${local.name}"  --tunnel-through-iap --project "${var.project_id}" --command "./switch-to-standard.sh; ./deploy-operator.sh; "
@@ -105,7 +115,9 @@ resource "local_file" "deploy_to_standard" {
 resource "local_file" "deploy_to_autopilot" {
 
   filename = "${var.folder}/deploy-to-autopilot.sh"
-  
+  file_permission      = "0700"
+  directory_permission = "0700"
+
   content  = <<-EOT
     #!/bin/bash
     gcloud compute ssh --zone "${local.zone}"  "${local.name}"  --tunnel-through-iap --project "${var.project_id}" --command "./switch-to-autopilot.sh; ./deploy-operator.sh; "

@@ -16,9 +16,7 @@
 resource "local_file" "ssh_command" {
 
   filename = "${var.folder}/ssh_to_client.sh"
-  file_permission      = "0700"
-  directory_permission = "0700"
-
+  
   content  = <<-EOT
     gcloud compute ssh --zone "${google_compute_instance.proxyclient.zone}" \
       "${google_compute_instance.proxyclient.name}" \

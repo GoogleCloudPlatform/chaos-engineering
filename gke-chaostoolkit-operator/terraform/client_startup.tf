@@ -20,7 +20,7 @@ resource "local_file" "client_startup" {
   content  =  <<-EOT
     #!/bin/bash
     sudo mkdir -p ${var.operator_root}
-    sudo chmod 777 ${var.operator_root}
+    sudo chmod 750 ${var.operator_root}
     cd ${var.operator_root}
     sudo apt-get update
     sudo apt-get -y install curl git-all 

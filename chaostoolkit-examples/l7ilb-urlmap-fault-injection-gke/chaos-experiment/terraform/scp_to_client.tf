@@ -16,6 +16,8 @@
 resource "local_file" "scp_command" {
 
   filename = "${var.folder}/copy_to_client.sh"
+  file_permission      = "0700"
+  directory_permission = "0700"
   
   content  = <<-EOT
     #!/bin/bash

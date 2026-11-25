@@ -14,8 +14,11 @@
 #   limitations under the License.
 #
 . .setEnv.sh
-sudo mkdir -p $folder
-sudo chmod 777 $folder
+
+sudo mkdir -p "$folder"
+sudo chown -R "$(id -u):$(id -g)" "$folder"
+chmod 700 "$folder"
+
 ./.createSA.sh
 cd ../app/scripts
 ./setupApp.sh
